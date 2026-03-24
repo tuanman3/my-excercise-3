@@ -12,7 +12,8 @@ function App() {
           <Route path="/" element={<Navigate to="/register" />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          {/* Mọi đường dẫn sai sẽ về trang 404 */}
+
+          {/* All url will return to 404 page */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>

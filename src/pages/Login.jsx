@@ -29,13 +29,13 @@ const Login = () => {
       return;
     }
 
-    // Kiểm tra thông tin khớp hoàn toàn với lúc đăng ký
+    // Check for match user's information
     if (
       data.username === savedUser.username &&
       data.password === savedUser.password
     ) {
       alert(`Chào mừng ${savedUser.username} đã quay trở lại!`);
-      // Ở đây bạn có thể navigate('/home') nếu đã có trang chủ
+      // Can navigate('/home') if it had homepage
     } else {
       alert("Tên đăng nhập hoặc mật khẩu không đúng.");
     }

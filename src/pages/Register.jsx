@@ -52,7 +52,7 @@ const Register = () => {
   ];
 
   const handleRegister = (data) => {
-    // Lưu thông tin vào localStorage để trang Login có thể dùng
+    // Save info to localStorage for Login page can use
     localStorage.setItem("userAccount", JSON.stringify(data));
     alert("Đăng ký thành công!");
     navigate("/login"); // Chuyển sang trang đăng nhập ngay
