@@ -65,11 +65,11 @@
   border-color: #ff4d4f;
 }
 
-/* ĐÂY LÀ PHẦN QUAN TRỌNG: Cố định chiều cao vùng lỗi */
+/* fixed height for error message */
 .error-message {
   color: #ff4d4f;
   font-size: 12px;
-  height: 18px; /* Cố định chiều cao */
+  height: 18px;
   margin-top: 2px;
-  display: block; /* Đảm bảo nó chiếm một dòng riêng */
+  display: block;
 }
