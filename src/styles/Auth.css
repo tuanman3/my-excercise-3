@@ -1,0 +1,76 @@
+/* src/styles/Auth.css */
+.auth-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.auth-card {
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.auth-title {
+  margin-bottom: 25px;
+  color: #333;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.auth-footer {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #666;
+}
+
+.auth-link {
+  color: #1890ff;
+  cursor: pointer;
+  font-weight: 500;
+  border: none;
+  background: none;
+  text-decoration: underline;
+  padding: 0;
+  margin-left: 5px;
+}
+
+/* Container bao quanh mỗi cặp Label + Input */
+.input-group {
+  margin-bottom: 5px; /* Giảm margin dưới lại vì đã có vùng lỗi bên dưới */
+  text-align: left;
+}
+
+.input-label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #333;
+}
+
+.input-field {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.input-field.error {
+  border-color: #ff4d4f;
+}
+
+/* ĐÂY LÀ PHẦN QUAN TRỌNG: Cố định chiều cao vùng lỗi */
+.error-message {
+  color: #ff4d4f;
+  font-size: 12px;
+  height: 18px; /* Cố định chiều cao */
+  margin-top: 2px;
+  display: block; /* Đảm bảo nó chiếm một dòng riêng */
+}

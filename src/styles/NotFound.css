@@ -1,0 +1,67 @@
+/* .back-btn {
+  padding: 10px 20px;
+  background-color: #1890ff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+} */
+
+/* src/styles/NotFound.css */
+
+.notfound-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.notfound-card {
+  background-color: #ffffff;
+  padding: 50px 40px;
+  border-radius: 16px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 450px;
+  text-align: center;
+  border-top: 5px solid #ff0000;
+}
+
+.notfound-code {
+  font-size: 100px;
+  font-weight: 800;
+  color: #ff0000;
+  margin: 0;
+  letter-spacing: -5px;
+  line-height: 1;
+}
+
+.notfound-title {
+  font-size: 24px;
+  color: #333;
+  margin: 20px 0 10px 0;
+}
+
+.notfound-desc {
+  color: #888;
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+.notfound-btn {
+  width: 100%;
+  background-color: #333;
+  color: #fff;
+  border: none;
+  padding: 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition:
+    transform 0.2s,
+    background-color 0.2s;
+}
+
+.notfound-btn:hover {
+  background-color: #555;
+}
