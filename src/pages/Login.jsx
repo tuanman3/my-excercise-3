@@ -1,8 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import DynamicForm from "../components/Form/DynamicForm";
 import "../styles/Auth.css";
+import Notification from "../components/Common/Notification";
+import { useState } from "react";
 
 const Login = () => {
+  const [notify, setNotify] = useState({ show: false, msg: "", type: "" });
   const navigate = useNavigate();
 
   const loginModel = [
@@ -25,24 +28,45 @@ const Login = () => {
     const savedUser = JSON.parse(localStorage.getItem("userAccount"));
 
     if (!savedUser) {
-      alert("Tài khoản chưa tồn tại. Vui lòng đăng ký!");
+      setNotify({
+        show: true,
+        msg: "Tài khoản chưa tồn tại. Vui lòng đăng ký!",
+        type: "error",
+      });
       return;
     }
 
     // Check for match user's information
     if (
+      savedUser &&
       data.username === savedUser.username &&
       data.password === savedUser.password
     ) {
-      alert(`Chào mừng ${savedUser.username} đã quay trở lại!`);
-      // Can navigate('/home') if it had homepage
+      // session
+      localStorage.setItem("isLoggedIn", "true");
+
+      setNotify({ show: true, msg: "Đăng nhập thành công!", type: "success" });
+      setTimeout(() => navigate("/admin/dashboard"), 500);
     } else {
-      alert("Tên đăng nhập hoặc mật khẩu không đúng.");
+      setNotify({
+        show: true,
+        msg: "Tên đăng nhập hoặc mật khẩu không đúng.",
+        type: "error",
+      });
     }
   };
 
   return (
     <div className="auth-container">
+      {notify.show && (
+        <div className="toast-container">
+          <Notification
+            message={notify.msg}
+            type={notify.type}
+            onClose={() => setNotify({ ...notify, show: false })}
+          />
+        </div>
+      )}
       <div className="auth-card">
         <h2 className="auth-title">Đăng Nhập</h2>
 

@@ -38,9 +38,9 @@
   margin-left: 5px;
 }
 
-/* Container bao quanh mỗi cặp Label + Input */
+/* Container surrounding each pair Label + Input */
 .input-group {
-  margin-bottom: 5px; /* Giảm margin dưới lại vì đã có vùng lỗi bên dưới */
+  margin-bottom: 5px; /* reduce margin bottom for already had error zone below */
   text-align: left;
 }
 

@@ -1,8 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import DynamicForm from "../components/Form/DynamicForm";
+import Notification from "../components/Common/Notification";
+
 import "../styles/Auth.css";
+import { useState } from "react";
 
 const Register = () => {
+  const [notify, setNotify] = useState({ show: false, msg: "", type: "" });
+
   const navigate = useNavigate();
 
   const registerModel = [
@@ -54,12 +59,22 @@ const Register = () => {
   const handleRegister = (data) => {
     // Save info to localStorage for Login page can use
     localStorage.setItem("userAccount", JSON.stringify(data));
-    alert("Đăng ký thành công!");
-    navigate("/login"); // Chuyển sang trang đăng nhập ngay
+    setNotify({ show: true, msg: "Đăng ký thành công!", type: "success" });
+
+    setTimeout(() => navigate("/login"), 500);
   };
 
   return (
     <div className="auth-container">
+      {notify.show && (
+        <div className="toast-container">
+          <Notification
+            message={notify.msg}
+            type={notify.type}
+            onClose={() => setNotify({ ...notify, show: false })}
+          />
+        </div>
+      )}
       <div className="auth-card">
         <h2 className="auth-title">Đăng Ký</h2>
 
