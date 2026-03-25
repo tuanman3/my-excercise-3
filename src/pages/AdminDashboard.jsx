@@ -17,19 +17,23 @@ const INITIAL_USERS = Array(11)
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("userAccount"));
+  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
   // check login when enter page
   useEffect(() => {
-    const savedUser = localStorage.getItem("userAccount");
-    if (!savedUser) {
+    if (!isLoggedIn) {
       alert("Bạn chưa đăng nhập. Vui lòng quay lại!");
       navigate("/login");
     }
-  }, [navigate]);
+  }, [isLoggedIn, navigate]);
+
+  if (!isLoggedIn) {
+    return null;
+  }
 
   return (
-    <AdminLayout userName={user?.username}>
+    <AdminLayout userName={currentUser?.username}>
       <div className="content-header">
         <h2>Danh sách</h2>
         <button className="add-btn">Thêm</button>

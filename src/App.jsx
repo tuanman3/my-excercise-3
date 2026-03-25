@@ -5,6 +5,7 @@ import NotFound from "./pages/NotFound";
 import "./styles/Main.css";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminProducts from "./pages/AdminProducts";
+import ProtectedRoute from "./components/Auth/ProtectedRoute";
 
 function App() {
   return (
@@ -14,8 +15,23 @@ function App() {
           <Route path="/" element={<Navigate to="/register" />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path="/admin/products" element={<AdminProducts />} />
+
+          <Route
+            path="/admin/dashboard"
+            element={
+              <ProtectedRoute>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/products"
+            element={
+              <ProtectedRoute>
+                <AdminProducts />
+              </ProtectedRoute>
+            }
+          />
 
           {/* All url will return to 404 page */}
           <Route path="*" element={<NotFound />} />

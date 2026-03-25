@@ -57,8 +57,29 @@ const Register = () => {
   ];
 
   const handleRegister = (data) => {
-    // Save info to localStorage for Login page can use
-    localStorage.setItem("userAccount", JSON.stringify(data));
+    // 1. Lấy danh sách user cũ từ localStorage (nếu chưa có thì tạo mảng rỗng)
+    const existingUsers = JSON.parse(localStorage.getItem("userList")) || [];
+
+    // 2. Kiểm tra xem email hoặc username đã tồn tại chưa (tùy chọn)
+    const isExisted = existingUsers.some(
+      (user) => user.username === data.username,
+    );
+    if (isExisted) {
+      // alert("Tên đăng nhập đã tồn tại!");
+      setNotify({
+        show: true,
+        msg: "Tên đăng nhập đã tồn tại!",
+        type: "warning",
+      });
+
+      return;
+    }
+
+    // 3. Thêm user mới vào mảng
+    const updatedUsers = [...existingUsers, data];
+
+    // 4. Lưu lại mảng mới vào localStorage
+    localStorage.setItem("userList", JSON.stringify(updatedUsers));
     setNotify({ show: true, msg: "Đăng ký thành công!", type: "success" });
 
     setTimeout(() => navigate("/login"), 500);

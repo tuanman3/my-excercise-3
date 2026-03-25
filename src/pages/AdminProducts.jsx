@@ -6,15 +6,20 @@ import { IconDelete, IconEdit } from "../components/Common/Icons";
 
 const AdminProducts = () => {
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("userAccount"));
+  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
   // check login
   useEffect(() => {
-    const savedUser = localStorage.getItem("userAccount");
-    if (!savedUser) {
+    if (!isLoggedIn) {
       navigate("/login");
     }
-  }, [navigate]);
+  }, [isLoggedIn, navigate]);
+
+  if (!isLoggedIn) {
+    return null;
+  }
 
   // mock data
   const productsData = Array(5).fill({
@@ -25,7 +30,7 @@ const AdminProducts = () => {
   });
 
   return (
-    <AdminLayout userName={user?.username}>
+    <AdminLayout userName={currentUser?.username}>
       <div className="content-header">
         <h2>Danh sách sản phẩm</h2>
         <button className="add-btn">Thêm</button>

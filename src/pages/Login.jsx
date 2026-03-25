@@ -25,9 +25,15 @@ const Login = () => {
   ];
 
   const handleLogin = (data) => {
-    const savedUser = JSON.parse(localStorage.getItem("userAccount"));
+    // 1. Lấy danh sách mảng userList
+    const userList = JSON.parse(localStorage.getItem("userList")) || [];
 
-    if (!savedUser) {
+    // 2. Tìm user khớp cả username và password
+    const foundUser = userList.find(
+      (u) => u.username === data.username && u.password === data.password,
+    );
+
+    if (!foundUser) {
       setNotify({
         show: true,
         msg: "Tài khoản chưa tồn tại. Vui lòng đăng ký!",
@@ -37,13 +43,11 @@ const Login = () => {
     }
 
     // Check for match user's information
-    if (
-      savedUser &&
-      data.username === savedUser.username &&
-      data.password === savedUser.password
-    ) {
+    if (foundUser) {
       // session
       localStorage.setItem("isLoggedIn", "true");
+      // Lưu thông tin user hiện tại đang login để hiển thị trên Header
+      localStorage.setItem("currentUser", JSON.stringify(foundUser));
 
       setNotify({ show: true, msg: "Đăng nhập thành công!", type: "success" });
       setTimeout(() => navigate("/admin/dashboard"), 500);
