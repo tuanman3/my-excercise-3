@@ -90,7 +90,8 @@
   cursor: pointer;
 }
 
-.header-right {
+.header-right,
+.admin-info {
   display: flex;
   align-items: center;
 }
@@ -103,6 +104,23 @@
   background-color: #ccc; /* fallback if have not img */
 }
 
+.user-avatar-header {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  border: 2px solid #e0dbcf;
+  margin-left: 10px;
+}
+
+.table-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
 .logout-btn {
   background: none;
   border: none;
@@ -111,7 +129,7 @@
   margin-left: 15px;
 }
 
-/* --- Vùng Content chính --- */
+/* --- Main Content  --- */
 .content-wrapper {
   padding: 30px;
   flex-grow: 1;
@@ -246,7 +264,7 @@
 
 .btn-modal:hover {
   box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.3);
-  filter: saturate(5) brightness(1);
+  filter: saturate(2) brightness(1);
   transition: all 0.5s ease;
 }
 .btn-modal:active {
@@ -267,7 +285,7 @@
   }
 }
 
-@media (max-width: 940px) {
+@media (max-width: 1445px) {
   .admin-sidebar {
     display: none;
   }

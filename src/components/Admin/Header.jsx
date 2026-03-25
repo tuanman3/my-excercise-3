@@ -1,6 +1,9 @@
 import { IconMenu } from "../Common/Icons";
 
-const Header = ({ toggleSidebar, onLogout, userName }) => {
+const Header = ({ toggleSidebar, onLogout, userName, onUpdateAvatar }) => {
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const defaultAvatar = `https://ui-avatars.com/api/?name=${userName}&background=random`;
+
   return (
     <header className="admin-header">
       <div className="header-left">
@@ -9,12 +12,17 @@ const Header = ({ toggleSidebar, onLogout, userName }) => {
         </button>
       </div>
       <div className="header-right">
-        <span style={{ marginRight: "10px" }}>{userName}</span>
-        <img
-          src="https://ui-avatars.com/api/?name=User&background=random"
-          alt="avatar"
-          className="user-avatar"
-        />
+        <div className="admin-info">
+          <span className="admin-name">{userName || "Admin"}</span>
+          <img
+            src={currentUser?.avatar || defaultAvatar}
+            className="user-avatar-header"
+            alt="Admin Avatar"
+            onClick={onUpdateAvatar}
+            style={{ cursor: "pointer" }}
+            title="Đổi ảnh đại diện"
+          />
+        </div>
         <button onClick={onLogout} className="logout-btn">
           Đăng xuất
         </button>

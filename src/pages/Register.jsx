@@ -57,15 +57,14 @@ const Register = () => {
   ];
 
   const handleRegister = (data) => {
-    // 1. Lấy danh sách user cũ từ localStorage (nếu chưa có thì tạo mảng rỗng)
+    // Get old user from localStorage (if not then create empty array)
     const existingUsers = JSON.parse(localStorage.getItem("userList")) || [];
 
-    // 2. Kiểm tra xem email hoặc username đã tồn tại chưa (tùy chọn)
+    // Check email or username already yet
     const isExisted = existingUsers.some(
       (user) => user.username === data.username,
     );
     if (isExisted) {
-      // alert("Tên đăng nhập đã tồn tại!");
       setNotify({
         show: true,
         msg: "Tên đăng nhập đã tồn tại!",
@@ -75,10 +74,10 @@ const Register = () => {
       return;
     }
 
-    // 3. Thêm user mới vào mảng
+    // Add new user into array
     const updatedUsers = [...existingUsers, data];
 
-    // 4. Lưu lại mảng mới vào localStorage
+    // Save new array into localStorage
     localStorage.setItem("userList", JSON.stringify(updatedUsers));
     setNotify({ show: true, msg: "Đăng ký thành công!", type: "success" });
 

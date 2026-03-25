@@ -5,7 +5,7 @@ import "../../styles/Admin.css";
 import LogoutModal from "./LogoutModal";
 import { useNavigate } from "react-router-dom";
 
-const AdminLayout = ({ children, userName }) => {
+const AdminLayout = ({ children, userName, onUpdateAvatar }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const navigate = useNavigate();
@@ -28,6 +28,7 @@ const AdminLayout = ({ children, userName }) => {
           toggleSidebar={toggleSidebar}
           onLogout={() => setIsLogoutModalOpen(true)}
           userName={userName}
+          onUpdateAvatar={onUpdateAvatar}
         />
 
         <div className="content-wrapper">

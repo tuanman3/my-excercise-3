@@ -1,43 +1,143 @@
 // src/pages/AdminDashboard.jsx
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AdminLayout from "../components/Admin/AdminLayout";
 import { IconDelete, IconEdit } from "../components/Common/Icons";
-
-const INITIAL_USERS = Array(11)
-  .fill(null)
-  .map((_, index) => ({
-    id: index,
-    name: "some text",
-    email: "mail@gmail.com",
-    updateDate: "08/07/2022",
-    // Random to test
-    status: Math.random() > 0.4 ? "đã kích hoạt" : "chưa kích hoạt",
-  }));
+import UserModal from "../components/Admin/UserModal";
+import AvatarModal from "../components/Admin/AvatarModel";
 
 const AdminDashboard = () => {
+  const [notify, setNotify] = useState({ show: false, msg: "", type: "" });
   const navigate = useNavigate();
-  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+  const [isLoggedIn] = useState(
+    () => localStorage.getItem("isLoggedIn") === "true",
+  );
+  const [currentUser] = useState(() =>
+    JSON.parse(localStorage.getItem("currentUser")),
+  );
+
+  // --- STATE MANAGE AVATAR ADMIN ---
+  const [isAdminAvatarModalOpen, setIsAdminAvatarModalOpen] = useState(false);
+
+  // --- UPDATE AVATAR ADMIN ---
+  const handleSaveAdminAvatar = (newLink) => {
+    // update into root users (userList) for login the next time
+    const userList = JSON.parse(localStorage.getItem("userList")) || [];
+    const updatedList = userList.map((u) =>
+      u.username === currentUser.username ? { ...u, avatar: newLink } : u,
+    );
+    localStorage.setItem("userList", JSON.stringify(updatedList));
+
+    // update into current session
+    localStorage.setItem(
+      "currentUser",
+      JSON.stringify({ ...currentUser, avatar: newLink }),
+    );
+
+    // close modal
+    setIsAdminAvatarModalOpen(false);
+
+    // reload
+    window.location.reload();
+  };
+
+  // state user
+  const [users, setUsers] = useState(() => {
+    const saved = localStorage.getItem("userListData");
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState(null);
 
   // check login when enter page
   useEffect(() => {
     if (!isLoggedIn) {
-      alert("Bạn chưa đăng nhập. Vui lòng quay lại!");
       navigate("/login");
     }
   }, [isLoggedIn, navigate]);
+
+  // update localStorage when users array change
+  useEffect(() => {
+    localStorage.setItem("userListData", JSON.stringify(users));
+  }, [users]);
+
+  // Feature: Save (Add or Edit)
+  const handleSaveUser = (data) => {
+    if (editingUser) {
+      // Logic edit
+      setUsers(
+        users.map((u) =>
+          u.id === editingUser.id
+            ? {
+                ...data,
+                id: editingUser.id,
+                updateDate: new Date().toLocaleDateString(),
+              } // keep id
+            : u,
+        ),
+      );
+      setNotify({ show: true, msg: "Cập nhật thành công!", type: "success" });
+    } else {
+      // Logic add
+      const newUser = {
+        ...data,
+        id: Date.now(),
+        updateDate: new Date().toLocaleDateString(),
+      };
+      setUsers([...users, newUser]);
+      setNotify({
+        show: true,
+        msg: "Thêm người dùng mới thành công!",
+        type: "success",
+      });
+    }
+
+    // hidden auto noti after 3s
+    setTimeout(() => setNotify((prev) => ({ ...prev, show: false })), 3000);
+
+    setIsModalOpen(false);
+    setEditingUser(null);
+  };
+
+  // Feature: Delete
+  const handleRemove = (id) => {
+    if (window.confirm("Bạn có chắc chắn muốn xóa người dùng này?")) {
+      setUsers(users.filter((u) => u.id !== id));
+    }
+  };
+
+  // Feature: Open edit form
+  const handleEdit = (userItem) => {
+    setEditingUser(userItem);
+    setIsModalOpen(true);
+  };
 
   if (!isLoggedIn) {
     return null;
   }
 
   return (
-    <AdminLayout userName={currentUser?.username}>
+    <AdminLayout
+      userName={currentUser?.username}
+      onUpdateAvatar={() => setIsAdminAvatarModalOpen(true)}
+    >
       <div className="content-header">
         <h2>Danh sách</h2>
-        <button className="add-btn">Thêm</button>
+        <button
+          className="add-btn"
+          onClick={() => {
+            setEditingUser(null);
+            setIsModalOpen(true);
+          }}
+        >
+          + Thêm
+        </button>
       </div>
+
+      {notify.show && (
+        <div className={`notify notify-${notify.type}`}>{notify.msg}</div>
+      )}
 
       <div className="admin-table-container">
         <table className="admin-table">
@@ -51,32 +151,63 @@ const AdminDashboard = () => {
             </tr>
           </thead>
           <tbody>
-            {INITIAL_USERS.map((user, index) => (
-              <tr key={index}>
-                <td>{user.name}</td>
-                <td>{user.email}</td>
-                <td>{user.updateDate}</td>
-                <td
-                  style={{
-                    color:
-                      user.status === "đã kích hoạt" ? "#2ecc71" : "#f39c12",
-                  }}
-                >
-                  {user.status}
-                </td>
-                <td className="action-btns">
-                  <button className="action-btn edit-btn">
-                    <IconEdit />
-                  </button>
-                  <button className="action-btn remove-btn">
-                    <IconDelete />
-                  </button>
+            {users.length === 0 ? (
+              <tr>
+                <td colSpan="6" style={{ textAlign: "center" }}>
+                  Chưa có dữ liệu
                 </td>
               </tr>
-            ))}
+            ) : (
+              users.map((item, index) => (
+                <tr key={item.id ?? index}>
+                  <td>{item.name}</td>
+                  <td>{item.email}</td>
+                  <td>{item.updateDate}</td>
+                  <td
+                    style={{
+                      color:
+                        item.status === "đã kích hoạt" ? "#2ecc71" : "#f39c12",
+                    }}
+                  >
+                    {item.status}
+                  </td>
+                  <td className="action-btns">
+                    <button
+                      className="action-btn edit-btn"
+                      onClick={() => handleEdit(item)}
+                    >
+                      <IconEdit />
+                    </button>
+                    <button
+                      className="action-btn remove-btn"
+                      onClick={() => handleRemove(item.id)}
+                    >
+                      <IconDelete />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
+
+      {/* Modal for Admin change Avatar */}
+      <AvatarModal
+        isOpen={isAdminAvatarModalOpen}
+        onClose={() => setIsAdminAvatarModalOpen(false)}
+        currentAvatar={currentUser?.avatar}
+        onSave={handleSaveAdminAvatar}
+      />
+
+      {/* Modal for Add-Edit User */}
+      <UserModal
+        key={editingUser ? editingUser.id : "new"}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleSaveUser}
+        editingUser={editingUser}
+      />
     </AdminLayout>
   );
 };

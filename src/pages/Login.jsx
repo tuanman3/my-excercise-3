@@ -25,10 +25,10 @@ const Login = () => {
   ];
 
   const handleLogin = (data) => {
-    // 1. Lấy danh sách mảng userList
+    // get userList array
     const userList = JSON.parse(localStorage.getItem("userList")) || [];
 
-    // 2. Tìm user khớp cả username và password
+    // find user matching both username & password
     const foundUser = userList.find(
       (u) => u.username === data.username && u.password === data.password,
     );
@@ -46,7 +46,7 @@ const Login = () => {
     if (foundUser) {
       // session
       localStorage.setItem("isLoggedIn", "true");
-      // Lưu thông tin user hiện tại đang login để hiển thị trên Header
+      // save the current user's info is logging to render on Header
       localStorage.setItem("currentUser", JSON.stringify(foundUser));
 
       setNotify({ show: true, msg: "Đăng nhập thành công!", type: "success" });
