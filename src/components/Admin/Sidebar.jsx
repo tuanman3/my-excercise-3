@@ -20,7 +20,7 @@ const Sidebar = ({ isOpen }) => {
 
   return (
     <div className={`admin-sidebar ${isOpen ? "" : "closed"}`}>
-      <div className="sidebar-header">{isOpen && <span>MY APP</span>}</div>
+      <div className="sidebar-header">{isOpen && <span>MENU</span>}</div>
       <div className="sidebar-menu">
         {menuItems.map((item) => (
           <div
@@ -29,7 +29,7 @@ const Sidebar = ({ isOpen }) => {
             onClick={() => navigate(item.path)}
           >
             <span style={{ marginRight: "10px" }}>{item.icon}</span>
-            {isOpen && <span>{item.name}</span>}
+            {isOpen && <span style={{ fontWeight: "700" }}>{item.name}</span>}
           </div>
         ))}
       </div>
