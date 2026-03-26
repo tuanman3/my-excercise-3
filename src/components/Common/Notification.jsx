@@ -1,22 +1,30 @@
+// src/components/Common/AppNotification.jsx
 import { useEffect } from "react";
-import "../../styles/Notification.css";
-import { IconTick, IconX } from "./Icons";
+import { useDispatch, useSelector } from "react-redux";
+import { notification } from "antd";
+import { clearNotify } from "../../store/userSlice";
 
-const Notification = ({ message, type = "success", onClose }) => {
+/**
+ * Component listen Redux notify and show Ant Design notification toast
+ * Put only 1 in AdminLayout.
+ */
+const Notification = () => {
+  const dispatch = useDispatch();
+  const notify = useSelector((state) => state.users.notify);
+  const [api, contextHolder] = notification.useNotification();
+
   useEffect(() => {
-    const timer = setTimeout(() => {
-      onClose();
-    }, 3000); // auto close after 3s
-    return () => clearTimeout(timer);
-  }, [onClose]);
+    if (notify.show) {
+      api[notify.type]({
+        title: notify.msg,
+        placement: "topRight",
+        duration: 3,
+      });
+      dispatch(clearNotify());
+    }
+  }, [notify, api, dispatch]);
 
-  return (
-    <div className={`toast ${type}`}>
-      <span className="toast-message">
-        {type === "success" ? <IconTick /> : <IconX />} {message}
-      </span>
-    </div>
-  );
+  return <>{contextHolder}</>;
 };
 
 export default Notification;

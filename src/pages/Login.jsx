@@ -1,92 +1,126 @@
-import { useNavigate } from "react-router-dom";
-import DynamicForm from "../components/Form/DynamicForm";
-import "../styles/Auth.css";
-import Notification from "../components/Common/Notification";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { Form, Input, Button, Card, Typography, Alert } from "antd";
+import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import { login } from "../store/authSlice";
+
+const { Title, Text } = Typography;
 
 const Login = () => {
-  const [notify, setNotify] = useState({ show: false, msg: "", type: "" });
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const loginModel = [
-    {
-      label: "Tên đăng nhập",
-      name: "username",
-      placeholder: "Tên đã đăng ký...",
-      rules: { required: true },
-    },
-    {
-      label: "Mật khẩu",
-      name: "password",
-      type: "password",
-      placeholder: "********",
-      rules: { required: true },
-    },
-  ];
+  const handleLogin = (values) => {
+    setLoading(true);
+    setError("");
 
-  const handleLogin = (data) => {
-    // get userList array
     const userList = JSON.parse(localStorage.getItem("userList")) || [];
-
-    // find user matching both username & password
     const foundUser = userList.find(
-      (u) => u.username === data.username && u.password === data.password,
+      (u) => u.username === values.username && u.password === values.password,
     );
 
     if (!foundUser) {
-      setNotify({
-        show: true,
-        msg: "Tài khoản chưa tồn tại. Vui lòng đăng ký!",
-        type: "error",
-      });
+      setError("Tên đăng nhập hoặc mật khẩu không đúng!");
+      setLoading(false);
       return;
     }
-
-    // Check for match user's information
-    if (foundUser) {
-      // session
-      localStorage.setItem("isLoggedIn", "true");
-      // save the current user's info is logging to render on Header
-      localStorage.setItem("currentUser", JSON.stringify(foundUser));
-
-      setNotify({ show: true, msg: "Đăng nhập thành công!", type: "success" });
-      setTimeout(() => navigate("/admin/dashboard"), 500);
-    } else {
-      setNotify({
-        show: true,
-        msg: "Tên đăng nhập hoặc mật khẩu không đúng.",
-        type: "error",
-      });
-    }
+    setSuccess("Đăng nhập thành công!");
+    dispatch(login(foundUser));
+    setTimeout(() => navigate("/admin/dashboard"), 300);
+    setLoading(false);
   };
 
   return (
-    <div className="auth-container">
-      {notify.show && (
-        <div className="toast-container">
-          <Notification
-            message={notify.msg}
-            type={notify.type}
-            onClose={() => setNotify({ ...notify, show: false })}
+    <div
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "#D9D9D9",
+        padding: 16,
+      }}
+    >
+      <Card
+        style={{
+          width: "100%",
+          maxWidth: 400,
+          borderRadius: 12,
+          boxShadow: "0 2px 4px #000",
+          border: "2px solid #DCD7C9",
+        }}
+      >
+        <div style={{ textAlign: "center", marginBottom: 24 }}>
+          <Title level={3} style={{ margin: 0 }}>
+            Đăng Nhập
+          </Title>
+          <Text type="secondary">Hệ thống quản trị Admin</Text>
+        </div>
+
+        {success && (
+          <Alert
+            title={success}
+            type="success"
+            showIcon
+            style={{ marginBottom: 16 }}
           />
-        </div>
-      )}
-      <div className="auth-card">
-        <h2 className="auth-title">Đăng Nhập</h2>
+        )}
 
-        <DynamicForm
-          formModel={loginModel}
-          onSubmit={handleLogin}
-          buttonText="Đăng nhập"
-        />
+        {error && (
+          <Alert
+            title={error}
+            type="error"
+            showIcon
+            style={{ marginBottom: 16 }}
+          />
+        )}
 
-        <div className="auth-footer">
-          <span>Chưa có tài khoản? </span>
-          <button onClick={() => navigate("/register")} className="auth-link">
+        <Form
+          layout="vertical"
+          onFinish={handleLogin}
+          autoComplete="off"
+          requiredMark={false}
+        >
+          <Form.Item
+            label="Tên đăng nhập"
+            name="username"
+            rules={[
+              { required: true, message: "Vui lòng nhập tên đăng nhập!" },
+            ]}
+          >
+            <Input prefix={<UserOutlined />} placeholder="Tên đã đăng ký..." />
+          </Form.Item>
+
+          <Form.Item
+            label="Mật khẩu"
+            name="password"
+            rules={[{ required: true, message: "Vui lòng nhập mật khẩu!" }]}
+          >
+            <Input.Password prefix={<LockOutlined />} placeholder="********" />
+          </Form.Item>
+
+          <Form.Item style={{ marginBottom: 8 }}>
+            <Button type="primary" htmlType="submit" block loading={loading}>
+              Đăng nhập
+            </Button>
+          </Form.Item>
+        </Form>
+
+        <div style={{ textAlign: "center" }}>
+          <Text type="secondary">Chưa có tài khoản? </Text>
+          <Button
+            type="link"
+            onClick={() => navigate("/register")}
+            style={{ padding: 0 }}
+          >
             Đăng ký ngay
-          </button>
+          </Button>
         </div>
-      </div>
+      </Card>
     </div>
   );
 };

@@ -1,44 +1,35 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Register from "./pages/Register";
+// src/App.jsx
+import { Routes, Route, Navigate } from "react-router-dom";
+import ProtectedRoute from "./components/Common/ProtectedRoute";
 import Login from "./pages/Login";
-import NotFound from "./pages/NotFound";
-import "./styles/Main.css";
+import Register from "./pages/Register";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminProducts from "./pages/AdminProducts";
-import ProtectedRoute from "./components/Auth/ProtectedRoute";
+import NotFound from "./pages/NotFound";
 
-function App() {
-  return (
-    <BrowserRouter>
-      <div className="wrapper">
-        <Routes>
-          <Route path="/" element={<Navigate to="/register" />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-
-          <Route
-            path="/admin/dashboard"
-            element={
-              <ProtectedRoute>
-                <AdminDashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/products"
-            element={
-              <ProtectedRoute>
-                <AdminProducts />
-              </ProtectedRoute>
-            }
-          />
-
-          {/* All url will return to 404 page */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </div>
-    </BrowserRouter>
-  );
-}
+const App = () => (
+  <Routes>
+    <Route path="/" element={<Navigate to="/login" replace />} />
+    <Route path="/login" element={<Login />} />
+    <Route path="/register" element={<Register />} />
+    <Route
+      path="/admin/dashboard"
+      element={
+        <ProtectedRoute>
+          <AdminDashboard />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="/admin/products"
+      element={
+        <ProtectedRoute>
+          <AdminProducts />
+        </ProtectedRoute>
+      }
+    />
+    <Route path="*" element={<NotFound />} />
+  </Routes>
+);
 
 export default App;

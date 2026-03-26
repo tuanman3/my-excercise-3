@@ -1,47 +1,97 @@
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { Layout } from "antd";
+
 import Header from "./Header";
 import Sidebar from "./Sidebar";
-import "../../styles/Admin.css";
-import LogoutModal from "./LogoutModal";
-import { useNavigate } from "react-router-dom";
+import AvatarModal from "./AvatarModal";
+import ConfirmModal from "../Common/ConfirmModal";
+import Notification from "../Common/Notification";
+import { logout, updateAvatar } from "../../store/authSlice";
 
-const AdminLayout = ({ children, userName, onUpdateAvatar }) => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+const { Content } = Layout;
+
+/**
+ general layout for admin pages
+ management: toggle sidebar, logout modal, avatar modal
+**/
+const AdminLayout = ({ children }) => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const currentUser = useSelector((state) => state.auth.currentUser);
+
+  const [collapsed, setCollapsed] = useState(
+    () => localStorage.getItem("sidebarCollapsed") === "true",
+  );
+
+  const handleToggle = () => {
+    const next = !collapsed;
+    setCollapsed(next);
+    localStorage.setItem("sidebarCollapsed", String(next));
+  };
+
+  const [logoutOpen, setLogoutOpen] = useState(false);
+  const [avatarOpen, setAvatarOpen] = useState(false);
 
   const handleLogout = () => {
-    localStorage.removeItem("isLoggedIn");
+    dispatch(logout());
     navigate("/login");
   };
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
+  const handleSaveAvatar = (newLink) => {
+    dispatch(updateAvatar(newLink));
+    setAvatarOpen(false);
   };
 
   return (
-    <div className="admin-wrapper">
-      <Sidebar isOpen={isSidebarOpen} />
+    <Layout style={{ minHeight: "100vh" }}>
+      <Notification />
 
-      <div className="admin-main">
+      <Sidebar collapsed={collapsed} />
+
+      <Layout>
         <Header
-          toggleSidebar={toggleSidebar}
-          onLogout={() => setIsLogoutModalOpen(true)}
-          userName={userName}
-          onUpdateAvatar={onUpdateAvatar}
+          collapsed={collapsed}
+          onToggle={handleToggle}
+          onLogout={() => setLogoutOpen(true)}
+          onUpdateAvatar={() => setAvatarOpen(true)}
+          style={{ background: "#2C3639" }}
         />
 
-        <div className="content-wrapper">
-          {children} {/* where render user page hoặc products */}
-        </div>
-      </div>
+        <Content
+          style={{
+            margin: "24px 16px",
+            padding: 24,
+            background: "#fff",
+            borderRadius: 8,
+            minHeight: 280,
+          }}
+        >
+          {children}
+        </Content>
+      </Layout>
 
-      <LogoutModal
-        isOpen={isLogoutModalOpen}
-        onCancel={() => setIsLogoutModalOpen(false)}
+      {/* Logout confirm */}
+      <ConfirmModal
+        open={logoutOpen}
+        title="Xác nhận đăng xuất"
+        description="Bạn có chắc chắn muốn rời khỏi hệ thống không?"
+        confirmText="Đăng xuất"
+        danger
         onConfirm={handleLogout}
+        onCancel={() => setLogoutOpen(false)}
       />
-    </div>
+
+      {/* Avatar modal */}
+      <AvatarModal
+        key={String(avatarOpen)}
+        open={avatarOpen}
+        onClose={() => setAvatarOpen(false)}
+        currentAvatar={currentUser?.avatar}
+        onSave={handleSaveAvatar}
+      />
+    </Layout>
   );
 };
 

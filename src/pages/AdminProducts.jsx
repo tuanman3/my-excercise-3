@@ -1,74 +1,93 @@
-// src/pages/AdminProducts.jsx
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Table, Button, Typography, Space, Tag } from "antd";
+import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import AdminLayout from "../components/Admin/AdminLayout";
-import { IconDelete, IconEdit } from "../components/Common/Icons";
 
-const AdminProducts = () => {
-  const navigate = useNavigate();
-  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+const { Title } = Typography;
 
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+// Mock data — replace it with Redux slices when a real API is available
+const mockProducts = Array.from({ length: 5 }, (_, i) => ({
+  id: i + 1,
+  code: `PROD_00${i + 1}`,
+  name: "Tên sản phẩm mẫu",
+  price: "100.000 đ",
+  stock: 50 - i * 5,
+}));
 
-  // check login
-  useEffect(() => {
-    if (!isLoggedIn) {
-      navigate("/login");
-    }
-  }, [isLoggedIn, navigate]);
+const columns = [
+  { title: "Mã SP", dataIndex: "code", key: "code", responsive: ["md"] },
+  { title: "Tên sản phẩm", dataIndex: "name", key: "name", ellipsis: true },
+  { title: "Giá", dataIndex: "price", key: "price", responsive: ["sm"] },
+  {
+    title: "Kho",
+    dataIndex: "stock",
+    key: "stock",
+    responsive: ["sm"],
+    render: (v) => <Tag color={v > 10 ? "green" : "red"}>{v}</Tag>,
+  },
+  {
+    title: "",
+    key: "actions",
+    width: 90,
+    render: () => (
+      <Space size="small">
+        <Button
+          type="text"
+          icon={<EditOutlined style={{ color: "#52c41a" }} />}
+        />
+        <Button
+          type="text"
+          icon={<DeleteOutlined style={{ color: "#ff4d4f" }} />}
+        />
+      </Space>
+    ),
+  },
+];
 
-  if (!isLoggedIn) {
-    return null;
-  }
+const AdminProducts = () => (
+  <AdminLayout>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: 16,
+        flexWrap: "wrap",
+        gap: 8,
+      }}
+    >
+      <Title level={4} style={{ margin: 0 }}>
+        Danh sách sản phẩm
+      </Title>
+      <Button
+        icon={<PlusOutlined />}
+        style={{
+          background: "#DCD7C9",
+          fontWeight: "700",
+          transition: "all 0.2s",
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.borderColor = "#DCD7C9";
+          e.currentTarget.style.backgroundColor = "#DCD7C9";
+          e.currentTarget.style.boxShadow = "inset 0 2px 4px #3F4E4F";
+          e.currentTarget.style.color = "#000";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.boxShadow = "none";
+        }}
+      >
+        Thêm
+      </Button>
+    </div>
 
-  // mock data
-  const productsData = Array(5).fill({
-    code: "PROD_001",
-    name: "Tên sản phẩm mẫu",
-    price: "100.000 đ",
-    stock: "50",
-  });
-
-  return (
-    <AdminLayout userName={currentUser?.username}>
-      <div className="content-header">
-        <h2>Danh sách sản phẩm</h2>
-        <button className="add-btn">Thêm</button>
-      </div>
-
-      <div className="admin-table-container">
-        <table className="admin-table">
-          <thead>
-            <tr>
-              <th>Mã SP</th>
-              <th>Tên sản phẩm</th>
-              <th>Giá</th>
-              <th>Kho</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {productsData.map((prod, index) => (
-              <tr key={index}>
-                <td>{prod.code}</td>
-                <td>{prod.name}</td>
-                <td>{prod.price}</td>
-                <td>{prod.stock}</td>
-                <td className="action-btns">
-                  <button className="action-btn edit-btn">
-                    <IconEdit />
-                  </button>
-                  <button className="action-btn remove-btn">
-                    <IconDelete />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </AdminLayout>
-  );
-};
+    <Table
+      rowKey="id"
+      dataSource={mockProducts}
+      columns={columns}
+      pagination={{ pageSize: 8, showSizeChanger: false }}
+      scroll={{ x: "max-content" }}
+      locale={{ emptyText: "Chưa có dữ liệu" }}
+    />
+  </AdminLayout>
+);
 
 export default AdminProducts;

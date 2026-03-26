@@ -33,6 +33,7 @@
 .sidebar-menu {
   padding-top: 20px;
   flex-grow: 1;
+  box-shadow: 0 4px 6px #000;
 }
 
 .sidebar-menu-item {
