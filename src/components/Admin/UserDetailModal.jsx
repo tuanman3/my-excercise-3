@@ -10,7 +10,7 @@ const UserDetailModal = ({ isOpen, onClose, user }) => {
         <div style={{ textAlign: "center", marginBottom: "20px" }}>
           <img
             src={
-              user.avatar ||
+              user?.avatar ||
               `https://ui-avatars.com/api/?name=${user?.username || "A"}&background=random`
             }
             style={{

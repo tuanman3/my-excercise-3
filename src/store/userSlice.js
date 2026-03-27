@@ -1,20 +1,64 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+// Dữ liệu mẫu khởi tạo (Mock data)
+const initialUsers = [
+  {
+    id: 1,
+    username: "man",
+    name: "Tuấn Mẫn",
+    email: "tuanman@s3.com",
+    phone: "0901234567",
+    status: "chưa kích hoạt",
+    updateDate: "27/03/2026",
+    password: "", // Để trống để Test trang Register (Kích hoạt)
+  },
+  {
+    id: 2,
+    username: "admin",
+    name: "Quản Trị Viên",
+    email: "admin@s3.com",
+    phone: "0908888999",
+    status: "đã kích hoạt",
+    updateDate: "27/03/2026",
+    password: "123", // Đã có pass để Test Login
+  },
+  {
+    id: 3,
+    username: "aaa",
+    name: "Nguyễn Văn A",
+    email: "vana@s3.com",
+    phone: "0901112223",
+    status: "chưa kích hoạt",
+    updateDate: "27/03/2026",
+    password: "",
+  },
+];
+
 const loadUsers = () => {
   try {
-    return JSON.parse(localStorage.getItem("userListData")) || [];
+    const saved = localStorage.getItem("userList");
+    if (!saved) {
+      // Nếu chưa có userList trong máy, lưu data mẫu vào luôn
+      localStorage.setItem("userList", JSON.stringify(initialUsers));
+      return initialUsers;
+    }
+    return JSON.parse(saved);
   } catch {
-    return [];
+    return initialUsers;
   }
 };
 
 const saveUsers = (users) => {
-  localStorage.setItem("userListData", JSON.stringify(users));
+  localStorage.setItem("userList", JSON.stringify(users));
 };
 
-// Auto-increment id: lấy max id hiện có + 1
-const nextId = (users) =>
+const nextId = (users) => {
+  // if (!users || users.length === 0) return 1;
+  // // Lấy ra tất cả id, lọc bỏ các giá trị không phải số, sau đó tìm Max
+  // const ids = users.map((u) => Number(u.id)).filter((id) => !isNaN(id));
+  // return ids.length === 0 ? 1 : Math.max(...ids) + 1;
   users.length === 0 ? 1 : Math.max(...users.map((u) => u.id)) + 1;
+};
 
 const userSlice = createSlice({
   name: "users",
@@ -26,8 +70,10 @@ const userSlice = createSlice({
     addUser: (state, action) => {
       const newUser = {
         ...action.payload,
-        id: nextId(state.list), // auto-increment, not change
+        id: nextId(state.list),
         updateDate: new Date().toLocaleDateString("vi-VN"),
+        status: action.payload.status || "chưa kích hoạt",
+        password: "", // Admin tạo thì chưa có pass
       };
       state.list.push(newUser);
       saveUsers(state.list);
@@ -44,9 +90,8 @@ const userSlice = createSlice({
           ? {
               ...u,
               ...data,
-              id,
               updateDate: new Date().toLocaleDateString("vi-VN"),
-            } // giữ nguyên id
+            }
           : u,
       );
       saveUsers(state.list);
@@ -56,6 +101,11 @@ const userSlice = createSlice({
         type: "success",
       };
     },
+    removeUser: (state, action) => {
+      state.list = state.list.filter((u) => u.id !== action.payload);
+      saveUsers(state.list);
+      state.notify = { show: true, msg: "Đã xóa người dùng!", type: "error" };
+    },
     toggleStatus: (state, action) => {
       const user = state.list.find((u) => u.id === action.payload);
       if (user) {
@@ -64,11 +114,6 @@ const userSlice = createSlice({
         user.updateDate = new Date().toLocaleDateString("vi-VN");
         saveUsers(state.list);
       }
-    },
-    removeUser: (state, action) => {
-      state.list = state.list.filter((u) => u.id !== action.payload);
-      saveUsers(state.list);
-      state.notify = { show: true, msg: "Đã xoá người dùng!", type: "error" };
     },
     clearNotify: (state) => {
       state.notify = { show: false, msg: "", type: "" };

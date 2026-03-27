@@ -21,14 +21,15 @@ const authSlice = createSlice({
     },
     updateAvatar: (state, action) => {
       if (state.currentUser) {
-        state.currentUser = { ...state.currentUser, avatar: action.payload };
+        const newAvatar = action.payload;
+        state.currentUser = { ...state.currentUser, avatar: newAvatar };
         localStorage.setItem("currentUser", JSON.stringify(state.currentUser));
 
-        // Cập nhật vào userList gốc
+        // ĐỌC VÀ GHI VÀO CÙNG MỘT KEY 'userList'
         const userList = JSON.parse(localStorage.getItem("userList")) || [];
         const updated = userList.map((u) =>
           u.username === state.currentUser.username
-            ? { ...u, avatar: action.payload }
+            ? { ...u, avatar: newAvatar }
             : u,
         );
         localStorage.setItem("userList", JSON.stringify(updated));

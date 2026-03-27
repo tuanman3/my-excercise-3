@@ -1,12 +1,5 @@
-// src/pages/Register.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  UserOutlined,
-  MailOutlined,
-  PhoneOutlined,
-  LockOutlined,
-} from "@ant-design/icons";
 import {
   IconAuthUser,
   IconEmail,
@@ -34,41 +27,56 @@ const Register = () => {
     e.preventDefault();
     setError("");
 
-    // Logic kiểm tra pattern (thay thế rules của AntD)
-    if (!/^[a-zA-Z0-9 ]+$/.test(formData.username)) {
-      setError("Tên đăng nhập không được chứa ký tự đặc biệt!");
-      return;
-    }
-    if (!/^[0-9]{10,}$/.test(formData.phone)) {
-      setError("SĐT phải là số, từ 10 chữ số trở lên!");
-      return;
-    }
+    // 1. Validation cơ bản
     if (formData.password.length < 6) {
       setError("Mật khẩu tối thiểu 6 ký tự!");
       return;
     }
 
-    const existingUsers = JSON.parse(localStorage.getItem("userList")) || [];
+    // 2. Lấy danh sách user hiện có (từ Admin hoặc mặc định)
+    const userList = JSON.parse(localStorage.getItem("userList")) || [];
 
-    if (existingUsers.some((u) => u.username === formData.username)) {
-      setError("Tên đăng nhập đã tồn tại!");
+    // 3. Tìm user khớp Username, Email VÀ Phone
+    const userIndex = userList.findIndex(
+      (u) =>
+        u.username === formData.username &&
+        u.email === formData.email &&
+        u.phone === formData.phone,
+    );
+
+    // 4. Kiểm tra điều kiện kích hoạt
+    if (userIndex === -1) {
+      setError("Thông tin không khớp với dữ liệu nhân viên hệ thống!");
       return;
     }
 
-    localStorage.setItem(
-      "userList",
-      JSON.stringify([...existingUsers, formData]),
-    );
+    if (userList[userIndex].password && userList[userIndex].password !== "") {
+      setError("Tài khoản này đã được kích hoạt trước đó!");
+      return;
+    }
+
+    // 5. Cập nhật mật khẩu và kích hoạt tài khoản
+    const updatedUserList = [...userList];
+    updatedUserList[userIndex] = {
+      ...updatedUserList[userIndex],
+      password: formData.password, // Cập nhật mật khẩu mới
+      status: "đã kích hoạt", // Đổi trạng thái
+      updateDate: new Date().toLocaleDateString("vi-VN"),
+    };
+
+    // 6. Lưu lại vào LocalStorage
+    localStorage.setItem("userList", JSON.stringify(updatedUserList));
+
     setSuccess(true);
-    setTimeout(() => navigate("/login"), 800);
+    setTimeout(() => navigate("/login"), 1500);
   };
 
   return (
     <div className="login-container">
       <div className="login-card" style={{ maxWidth: "440px" }}>
         <div className="login-header">
-          <h2>Đăng Ký</h2>
-          <p className="subtitle">Tạo tài khoản quản trị mới</p>
+          <h2>Kích Hoạt Tài Khoản</h2>
+          <p className="subtitle">Dành cho nhân viên đã có trên hệ thống</p>
         </div>
 
         {error && (
@@ -78,14 +86,15 @@ const Register = () => {
         )}
         {success && (
           <div className="alert alert-success">
-            <span className="alert-icon">✓</span> Đăng ký thành công! Đang
+            <span className="alert-icon">✓</span> Kích hoạt thành công! Đang
             chuyển hướng...
           </div>
         )}
 
         <form onSubmit={handleRegister} className="login-form">
+          {/* Tên đăng nhập */}
           <div className="form-group">
-            <label>Tên đăng nhập</label>
+            <label>Tên đăng nhập (Username)</label>
             <div className="input-wrapper">
               <span className="prefix-icon">
                 <IconAuthUser />
@@ -94,7 +103,7 @@ const Register = () => {
                 type="text"
                 name="username"
                 required
-                placeholder="Nhập tên của bạn..."
+                placeholder="Nhập username được cấp..."
                 className="login-input"
                 value={formData.username}
                 onChange={handleChange}
@@ -102,6 +111,7 @@ const Register = () => {
             </div>
           </div>
 
+          {/* Email */}
           <div className="form-group">
             <label>Email</label>
             <div className="input-wrapper">
@@ -112,7 +122,7 @@ const Register = () => {
                 type="email"
                 name="email"
                 required
-                placeholder="example@gmail.com"
+                placeholder="Email đã đăng ký với Admin..."
                 className="login-input"
                 value={formData.email}
                 onChange={handleChange}
@@ -120,6 +130,7 @@ const Register = () => {
             </div>
           </div>
 
+          {/* SĐT */}
           <div className="form-group">
             <label>Số điện thoại</label>
             <div className="input-wrapper">
@@ -130,7 +141,7 @@ const Register = () => {
                 type="text"
                 name="phone"
                 required
-                placeholder="09xxxxxxxx"
+                placeholder="Số điện thoại đã đăng ký..."
                 className="login-input"
                 value={formData.phone}
                 onChange={handleChange}
@@ -138,8 +149,9 @@ const Register = () => {
             </div>
           </div>
 
+          {/* Mật khẩu mới */}
           <div className="form-group">
-            <label>Mật khẩu</label>
+            <label>Thiết lập mật khẩu mới</label>
             <div className="input-wrapper">
               <span className="prefix-icon">
                 <IconLock />
@@ -148,7 +160,7 @@ const Register = () => {
                 type="password"
                 name="password"
                 required
-                placeholder="********"
+                placeholder="Tối thiểu 6 ký tự"
                 className="login-input"
                 value={formData.password}
                 onChange={handleChange}
@@ -157,12 +169,12 @@ const Register = () => {
           </div>
 
           <button type="submit" className="login-submit-btn">
-            Đăng ký ngay
+            Kích hoạt ngay
           </button>
         </form>
 
         <div className="login-footer">
-          <span>Đã có tài khoản? </span>
+          <span>Đã kích hoạt? </span>
           <button className="link-btn" onClick={() => navigate("/login")}>
             Đăng nhập
           </button>

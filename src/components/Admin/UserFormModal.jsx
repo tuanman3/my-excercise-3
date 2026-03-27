@@ -2,10 +2,12 @@ import React, { useState } from "react";
 
 const UserFormModal = ({ isOpen, onClose, onSave, editingUser }) => {
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    avatar: "",
-    status: "chưa kích hoạt",
+    username: editingUser?.username || "",
+    name: editingUser?.name || "",
+    email: editingUser?.email || "",
+    phone: editingUser?.phone || "",
+    avatar: editingUser?.avatar || "",
+    status: editingUser?.status || "chưa kích hoạt",
   });
 
   if (!isOpen) return null;
@@ -17,6 +19,20 @@ const UserFormModal = ({ isOpen, onClose, onSave, editingUser }) => {
         style={{ width: "450px", textAlign: "left" }}
       >
         <h3>{editingUser ? "Chỉnh sửa người dùng" : "Thêm người dùng mới"}</h3>
+
+        {/* Trường Username - Cực kỳ quan trọng để Signup */}
+        <div className="input-group">
+          <label className="input-label">Tên đăng nhập (Username)</label>
+          <input
+            name="username"
+            className="input-field"
+            value={formData.username}
+            onChange={(e) =>
+              setFormData({ ...formData, username: e.target.value })
+            }
+            disabled={!!editingUser} // Thường username không nên cho sửa sau khi tạo
+          />
+        </div>
 
         <div className="input-group">
           <label className="input-label">Họ tên</label>
@@ -35,6 +51,18 @@ const UserFormModal = ({ isOpen, onClose, onSave, editingUser }) => {
             value={formData.email}
             onChange={(e) =>
               setFormData({ ...formData, email: e.target.value })
+            }
+          />
+        </div>
+
+        <div className="input-group">
+          <label className="input-label">Số điện thoại</label>
+          <input
+            name="phone"
+            className="input-field"
+            value={formData.phone}
+            onChange={(e) =>
+              setFormData({ ...formData, phone: e.target.value })
             }
           />
         </div>
@@ -71,6 +99,7 @@ const UserFormModal = ({ isOpen, onClose, onSave, editingUser }) => {
           <button
             className="btn-confirm btn-modal"
             onClick={() => onSave(formData)}
+            style={{ background: "#9cdb7c", color: "#000" }}
           >
             Lưu
           </button>

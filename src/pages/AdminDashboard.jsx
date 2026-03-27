@@ -21,7 +21,7 @@ const AdminDashboard = () => {
   );
 
   const [users, setUsers] = useState(() => {
-    const saved = localStorage.getItem("userListData");
+    const saved = localStorage.getItem("userList");
     return saved ? JSON.parse(saved) : [];
   });
 
@@ -29,7 +29,6 @@ const AdminDashboard = () => {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
-  // const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   const [editingUser, setEditingUser] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -41,7 +40,7 @@ const AdminDashboard = () => {
   }, [isLoggedIn, navigate]);
 
   useEffect(() => {
-    localStorage.setItem("userListData", JSON.stringify(users));
+    localStorage.setItem("userList", JSON.stringify(users));
   }, [users]);
 
   const showNotification = (msg, type) => {
@@ -69,14 +68,33 @@ const AdminDashboard = () => {
 
   const handleSaveUser = (data) => {
     if (editingUser) {
-      setUsers(users.map((u) => (u.id === editingUser.id ? { ...data } : u)));
+      // Logic Sửa: Giữ nguyên ID, cập nhật các field và updateDate
+      const updatedUsers = users.map((u) =>
+        u.id === editingUser.id
+          ? {
+              ...u,
+              ...data,
+              updateDate: new Date().toLocaleDateString("vi-VN"),
+            }
+          : u,
+      );
+      setUsers(updatedUsers);
       showNotification("Cập nhật người dùng thành công!", "success");
     } else {
+      // ID auto asc
+      const maxId = users.length > 0 ? Math.max(...users.map((u) => u.id)) : 0;
+
       const newUser = {
-        ...data,
-        id: Date.now(),
+        id: maxId + 1,
+        username: data.username, // Phải có username để sau này Signup
+        name: data.name,
+        email: data.email,
+        phone: data.phone, // Thêm số điện thoại theo yêu cầu
+        status: data.status || "chưa kích hoạt",
         updateDate: new Date().toLocaleDateString("vi-VN"),
+        password: "", // Mặc định trống, sẽ được tạo khi Signup
       };
+
       setUsers([...users, newUser]);
       showNotification("Thêm người dùng mới thành công!", "success");
     }
@@ -134,14 +152,14 @@ const AdminDashboard = () => {
                 </td>
               </tr>
             ) : (
-              users.map((item, index) => (
+              users.map((item) => (
                 <tr
                   className="action-btn view-btn"
                   onClick={() => {
                     setSelectedUser(item);
                     setIsDetailModalOpen(true);
                   }}
-                  key={item.id ?? index}
+                  key={item.id}
                 >
                   <td>{item.name}</td>
                   <td>{item.email}</td>
@@ -155,11 +173,15 @@ const AdminDashboard = () => {
                   >
                     {item.status}
                   </td>
-                  <td className="action-btns">
+                  <td
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                    className="action-btns"
+                  >
                     <button
                       className="action-btn edit-btn"
-                      onClick={(e) => {
-                        e.stopPropagation();
+                      onClick={() => {
                         setEditingUser(item);
                         setIsFormModalOpen(true);
                       }}
@@ -168,8 +190,7 @@ const AdminDashboard = () => {
                     </button>
                     <button
                       className="action-btn remove-btn"
-                      onClick={(e) => {
-                        e.stopPropagation();
+                      onClick={() => {
                         setDeletingId(item.id);
                         setIsDeleteModalOpen(true);
                       }}
@@ -185,6 +206,9 @@ const AdminDashboard = () => {
       </div>
 
       <UserFormModal
+        // Khi editingUser đổi từ id:1 sang id:2, React sẽ xóa Modal cũ và tạo mới hoàn toàn
+        // giúp state bên trong tự động được reset mà không cần useEffect
+        key={editingUser?.id || "new-user"}
         isOpen={isFormModalOpen}
         onClose={() => setIsFormModalOpen(false)}
         onSave={handleSaveUser}
