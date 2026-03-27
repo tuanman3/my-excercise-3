@@ -56,6 +56,15 @@ const userSlice = createSlice({
         type: "success",
       };
     },
+    toggleStatus: (state, action) => {
+      const user = state.list.find((u) => u.id === action.payload);
+      if (user) {
+        user.status =
+          user.status === "đã kích hoạt" ? "chưa kích hoạt" : "đã kích hoạt";
+        user.updateDate = new Date().toLocaleDateString("vi-VN");
+        saveUsers(state.list);
+      }
+    },
     removeUser: (state, action) => {
       state.list = state.list.filter((u) => u.id !== action.payload);
       saveUsers(state.list);
@@ -67,5 +76,6 @@ const userSlice = createSlice({
   },
 });
 
-export const { addUser, editUser, removeUser, clearNotify } = userSlice.actions;
+export const { addUser, editUser, removeUser, toggleStatus, clearNotify } =
+  userSlice.actions;
 export default userSlice.reducer;

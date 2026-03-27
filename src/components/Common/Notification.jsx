@@ -1,30 +1,40 @@
-// src/components/Common/AppNotification.jsx
+// src/components/Common/Notification.jsx
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { notification } from "antd";
 import { clearNotify } from "../../store/userSlice";
 
-/**
- * Component listen Redux notify and show Ant Design notification toast
- * Put only 1 in AdminLayout.
- */
 const Notification = () => {
   const dispatch = useDispatch();
+  // Lấy trực tiếp notify từ store
   const notify = useSelector((state) => state.users.notify);
-  const [api, contextHolder] = notification.useNotification();
 
   useEffect(() => {
+    // Nếu thông báo đang hiện, thiết lập thời gian tự đóng
     if (notify.show) {
-      api[notify.type]({
-        title: notify.msg,
-        placement: "topRight",
-        duration: 3,
-      });
-      dispatch(clearNotify());
-    }
-  }, [notify, api, dispatch]);
+      const timer = setTimeout(() => {
+        dispatch(clearNotify());
+      }, 3000);
 
-  return <>{contextHolder}</>;
+      return () => clearTimeout(timer);
+    }
+  }, [notify.show, dispatch]);
+
+  // Render trực tiếp dựa trên state của Redux
+  if (!notify.show || !notify.msg) return null;
+
+  return (
+    <div className={`toast-notification ${notify.type}`}>
+      <div className="toast-content">
+        <span className="toast-icon">
+          {notify.type === "success" ? "✓" : "⚠"}
+        </span>
+        <span className="toast-msg">{notify.msg}</span>
+      </div>
+      <button className="toast-close" onClick={() => dispatch(clearNotify())}>
+        ×
+      </button>
+    </div>
+  );
 };
 
 export default Notification;

@@ -1,52 +1,46 @@
-import { Modal, Descriptions, Avatar } from "antd";
-import { UserOutlined } from "@ant-design/icons";
-import StatusTag from "../Common/StatusTag";
+import React from "react";
 
-/**
- * Modal read user's info — READ ONLY
- * show when click on row in table.
- * Props: open, onClose, user
- */
-const UserDetailModal = ({ open, onClose, user }) => {
-  if (!user) return null;
+const UserDetailModal = ({ isOpen, onClose, user }) => {
+  if (!isOpen || !user) return null;
 
   return (
-    <Modal
-      open={open}
-      onCancel={onClose}
-      title="Thông tin người dùng"
-      footer={null}
-      centered
-      width={480}
-    >
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          marginBottom: 24,
-        }}
-      >
-        <Avatar
-          size={80}
-          icon={<UserOutlined />}
-          src={user.avatar}
-          style={{ backgroundColor: "#1677ff" }}
-        />
+    <div className="modal-overlay">
+      <div className="confirm-modal" style={{ width: "400px" }}>
+        <h3>Thông tin chi tiết</h3>
+        <div style={{ textAlign: "center", marginBottom: "20px" }}>
+          <img
+            src={
+              user.avatar ||
+              `https://ui-avatars.com/api/?name=${user?.username || "A"}&background=random`
+            }
+            style={{
+              width: "80px",
+              height: "80px",
+              borderRadius: "50%",
+              objectFit: "cover",
+            }}
+            alt=""
+          />
+        </div>
+        <div className="detail-item" style={{ marginBottom: "10px" }}>
+          <strong>Họ tên:</strong> <span>{user.name}</span>
+        </div>
+        <div className="detail-item" style={{ marginBottom: "10px" }}>
+          <strong>Email:</strong> <span>{user.email}</span>
+        </div>
+        <div className="detail-item" style={{ marginBottom: "10px" }}>
+          <strong>Ngày tạo:</strong> <span>{user.updateDate}</span>
+        </div>
+        <div className="detail-item">
+          <strong>Trạng thái:</strong> <span>{user.status}</span>
+        </div>
+        <div className="modal-btns" style={{ marginTop: "20px" }}>
+          <button className="btn-confirm btn-modal" onClick={onClose}>
+            Đóng
+          </button>
+        </div>
       </div>
-
-      <Descriptions column={1} bordered size="small">
-        <Descriptions.Item label="ID">{user.id}</Descriptions.Item>
-        <Descriptions.Item label="Tên hiển thị">{user.name}</Descriptions.Item>
-        <Descriptions.Item label="Email">{user.email}</Descriptions.Item>
-        <Descriptions.Item label="Trạng thái">
-          <StatusTag status={user.status} />
-        </Descriptions.Item>
-        <Descriptions.Item label="Ngày cập nhật">
-          {user.updateDate}
-        </Descriptions.Item>
-      </Descriptions>
-    </Modal>
+    </div>
   );
 };
 

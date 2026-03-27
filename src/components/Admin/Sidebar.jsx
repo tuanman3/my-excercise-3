@@ -1,80 +1,49 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { Menu, Layout, ConfigProvider } from "antd";
-import { UserOutlined, AppstoreOutlined } from "@ant-design/icons";
-import "../../styles/Main.css";
-const { Sider } = Layout;
+import { IconMenu, IconProduct, IconUser } from "../Common/Icons";
 
 const menuItems = [
   {
     key: "/admin/dashboard",
-    icon: <UserOutlined />,
+    icon: <IconUser />,
     label: "Danh sách người dùng",
   },
   {
     key: "/admin/products",
-    icon: <AppstoreOutlined />,
+    icon: <IconProduct />,
     label: "Danh sách sản phẩm",
   },
 ];
 
-const Sidebar = ({ collapsed }) => {
+const Sidebar = ({ collapsed, toggleSidebar }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
   return (
-    <Sider
-      collapsed={collapsed}
-      collapsible
-      trigger={null}
-      breakpoint="lg"
-      width={300}
-      style={{
-        minHeight: "100vh",
-        position: "sticky",
-        top: 0,
-        left: 0,
-        background: "#3F4E4F",
-      }}
-    >
-      <div
-        className="header-sidebar"
-        style={{
-          fontSize: collapsed ? 14 : 18,
-        }}
-      >
-        {collapsed ? "M" : "MENU"}
+    <div className={`admin-sidebar ${!collapsed ? "collapsed" : ""}`}>
+      <div className="sidebar-header">
+        {collapsed && (
+          <>
+            <button className="toggle-sidebar-btn" onClick={toggleSidebar}>
+              <IconMenu />
+            </button>
+          </>
+        )}
       </div>
-
-      <ConfigProvider
-        theme={{
-          components: {
-            Menu: {
-              darkItemSelectedBg: "#DCD7C9", // background when active
-              darkItemHoverBg: "#dcd7c934", // background when hover
-              darkItemSelectedColor: "#000", // text color when active
-              darkItemHoverColor: "#DCD7C9", // text color when hover
-              itemMarginBlock: "12px",
-              itemHeight: "60px",
-            },
-          },
-        }}
-      >
-        <Menu
-          theme="dark"
-          mode="inline"
-          selectedKeys={[location.pathname]}
-          items={menuItems}
-          onClick={({ key }) => navigate(key)}
-          style={{
-            paddingTop: "10px",
-            fontWeight: "700",
-            margin: "0 auto",
-            width: "90%",
-            background: "transparent",
-          }}
-        />
-      </ConfigProvider>
-    </Sider>
+      <div className="sidebar-menu">
+        {menuItems.map((item) => (
+          <div
+            key={item.key}
+            className={`sidebar-menu-item ${location.pathname === item.key ? "active" : ""}`}
+            onClick={() => navigate(item.key)}
+          >
+            <span style={{ marginRight: "10px" }}>{item.icon}</span>
+            {collapsed && (
+              <span style={{ fontWeight: "700" }}>{item.label}</span>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
   );
 };
 

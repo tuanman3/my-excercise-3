@@ -1,78 +1,42 @@
+// src/components/Admin/Header.jsx
 import { useSelector } from "react-redux";
-import { Layout, Avatar, Button, Tooltip, Typography, Space } from "antd";
-import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  LogoutOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
+import { IconMenu } from "../Common/Icons";
+import LogoutModal from "./LogoutModal";
 
-const { Header: AntHeader } = Layout;
-const { Text } = Typography;
-
-const Header = ({ collapsed, onToggle, onLogout, onUpdateAvatar }) => {
+const Header = ({ collapsed, toggleSidebar, onLogout, onUpdateAvatar }) => {
   const currentUser = useSelector((state) => state.auth.currentUser);
   const defaultAvatar = `https://ui-avatars.com/api/?name=${currentUser?.username || "A"}&background=random`;
 
   return (
-    <AntHeader
-      style={{
-        background: "#2C3639",
-        padding: "0 24px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
-        position: "sticky",
-        top: 0,
-        zIndex: 100,
-      }}
-    >
-      {/* Toggle sidebar */}
-      <Button
-        type="text"
-        icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-        onClick={onToggle}
-        style={{ fontSize: 18, color: "#fff" }}
-      />
+    <header className="admin-header">
+      <div className="header-left">
+        {!collapsed && (
+          <button className="toggle-sidebar-btn" onClick={toggleSidebar}>
+            <IconMenu />
+          </button>
+        )}
+      </div>
 
-      {/* Right: Avatar + Username + Logout */}
-      <Space size="middle">
-        <Text
-          strong
-          style={{ display: { xs: "none", sm: "inline" }, color: "#fff" }}
-        >
-          {currentUser?.username || "Admin"}
-        </Text>
+      <div className="header-right">
+        <div className="admin-info">
+          <span className="admin-name">{currentUser?.username || "Admin"}</span>
 
-        <Tooltip title="Đổi ảnh đại diện">
-          <Avatar
+          <img
             src={currentUser?.avatar || defaultAvatar}
-            icon={<UserOutlined />}
-            style={{ cursor: "pointer", backgroundColor: "#dbcda6" }}
+            className="user-avatar-header"
+            alt="Admin Avatar"
             onClick={onUpdateAvatar}
+            style={{ cursor: "pointer" }}
+            title="Đổi ảnh đại diện"
           />
-        </Tooltip>
+        </div>
 
-        <Button
-          type="text"
-          danger
-          icon={<LogoutOutlined />}
-          onClick={onLogout}
-          style={{ transition: "all 0.2s" }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = "#ff4d4f";
-            e.currentTarget.style.color = "#fff";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = "transparent";
-            e.currentTarget.style.color = "";
-          }}
-        >
+        <button className="logout-btn" onClick={onLogout}>
+          <LogoutModal />
           <span className="hide-mobile">Đăng xuất</span>
-        </Button>
-      </Space>
-    </AntHeader>
+        </button>
+      </div>
+    </header>
   );
 };
 

@@ -2,6 +2,7 @@
   display: flex;
   width: 100%;
   min-height: 100vh;
+  overflow: hidden;
   font-family: Arial, sans-serif;
   background-color: #f5f5f5;
 }
@@ -9,25 +10,28 @@
 /* Sidebar */
 .admin-sidebar {
   width: 300px;
+  min-width: 300px;
   background-color: #3f4e4f;
   color: #ecf0f1;
-  transition: width 0.3s;
+  transition: all 0.3s ease;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  margin-left: 0;
 }
 
-.admin-sidebar.closed {
-  width: 0;
+.admin-sidebar.collapsed {
+  margin-left: -300px;
 }
 
 .sidebar-header {
   height: 60px;
   background-color: #2c3639;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: left;
+  /* align-items: center; */
   font-weight: bold;
+  padding: 0 30px;
 }
 
 .sidebar-menu {
@@ -37,7 +41,7 @@
 }
 
 .sidebar-menu-item {
-  padding: 15px 25px;
+  padding: 15px;
   cursor: pointer;
   display: flex;
   width: 90%;
@@ -84,11 +88,32 @@
 }
 
 .toggle-sidebar-btn {
-  background: none;
+  background: transparent;
   border: none;
   color: #fff;
   font-size: 20px;
   cursor: pointer;
+
+  /* Hiệu ứng mờ dần trong 0.3 giây */
+  opacity: 0; /* Mặc định ẩn */
+  animation: fadeIn 0.3s ease-in forwards; /* Chạy animation hiện lên */
+  animation-delay: 0.1s; /* Đợi sidebar trượt một chút rồi mới hiện cho thật mượt */
+}
+
+/* Định nghĩa hiệu ứng mờ -> rõ */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.toggle-sidebar-btn:hover {
+  border-radius: 4px;
+  opacity: 0.8 !important;
+  transform: scale(1.05);
+  transition: transform 0.2s ease;
 }
 
 .header-right,
@@ -127,7 +152,7 @@
   border: none;
   color: white;
   cursor: pointer;
-  margin-left: 15px;
+  margin-left: 10px;
 }
 
 /* --- Main Content  --- */
@@ -146,7 +171,6 @@
 .add-btn {
   background-color: #e0dbcf;
   border: none;
-  padding: 8px 15px;
   border-radius: 4px;
   cursor: pointer;
   font-weight: bold;
@@ -187,6 +211,10 @@
   border: none;
   cursor: pointer;
   font-size: 16px;
+}
+
+.view-btn:hover {
+  background: #dcd7c977;
 }
 
 .edit-btn {
@@ -232,7 +260,7 @@
   padding: 25px;
   border-radius: 12px;
   width: 350px;
-  text-align: center;
+  text-align: left;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   animation: zoomIn 0.2s ease-out;
 }
@@ -286,7 +314,7 @@
   }
 }
 
-@media (max-width: 1445px) {
+@media (max-width: 1165px) {
   .admin-sidebar {
     display: none;
   }

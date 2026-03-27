@@ -1,57 +1,39 @@
-// src/components/Admin/AvatarModal.jsx
-import { useState } from "react";
-import { Modal, Input, Form, Button, Space, Avatar } from "antd";
-import { UserOutlined } from "@ant-design/icons";
-
-/**
- * Modal đổi avatar admin — nhập URL ảnh.
- * Props: open, onClose, currentAvatar, onSave
- *
- * Không dùng useEffect hay destroyOnClose.
- * AdminLayout truyền key={avatarOpen} để React tự unmount/remount
- * component mỗi khi modal mở — useState sẽ tự init lại đúng giá trị.
- */
-const AvatarModal = ({ open, onClose, currentAvatar, onSave }) => {
-  const [link, setLink] = useState(currentAvatar || "");
-
+import React, { useState } from "react";
+import "../../styles/Admin.css";
+import "../../styles/Auth.css";
+const AvatarModal = ({ isOpen, onClose, currentAvatar, onSave }) => {
+  const [newAvatarLink, setNewAvatarLink] = useState(currentAvatar || "");
+  if (!isOpen) return null;
   return (
-    <Modal
-      open={open}
-      onCancel={onClose}
-      title="Cập nhật ảnh đại diện"
-      footer={null}
-      centered
-      width={400}
-    >
-      <div style={{ textAlign: "center", margin: "16px 0" }}>
-        <Avatar
-          size={80}
-          src={link || undefined}
-          icon={<UserOutlined />}
-          style={{ backgroundColor: "#dbcda6" }}
-        />
-      </div>
-
-      <Form layout="vertical">
-        <Form.Item label="Dán Link ảnh mới (URL)">
-          <Input
-            value={link}
-            onChange={(e) => setLink(e.target.value)}
+    <div className="modal-overlay">
+      <div
+        className="confirm-modal"
+        style={{ textAlign: "left", width: "380px" }}
+      >
+        <h3>Cập nhật ảnh đại diện Admin</h3>{" "}
+        <div className="input-group">
+          <label className="input-label">Dán Link ảnh mới (URL)</label>{" "}
+          <input
+            className="input-field"
+            value={newAvatarLink}
+            onChange={(e) => setNewAvatarLink(e.target.value)}
             placeholder="https://example.com/photo.jpg"
           />
-        </Form.Item>
-
-        <Form.Item style={{ marginBottom: 0, textAlign: "right" }}>
-          <Space>
-            <Button onClick={onClose}>Hủy</Button>
-            <Button type="primary" onClick={() => onSave(link)}>
-              Cập nhật
-            </Button>
-          </Space>
-        </Form.Item>
-      </Form>
-    </Modal>
+        </div>
+        <div className="modal-btns">
+          <button className="btn-cancel btn-modal" onClick={onClose}>
+            Hủy
+          </button>
+          <button
+            className="btn-confirm btn-modal"
+            style={{ backgroundColor: "#96e2b6", color: "#000" }}
+            onClick={() => onSave(newAvatarLink)}
+          >
+            Cập nhật
+          </button>
+        </div>
+      </div>
+    </div>
   );
 };
-
 export default AvatarModal;

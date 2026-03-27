@@ -1,159 +1,173 @@
 // src/pages/Register.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Form, Input, Button, Card, Typography, Alert } from "antd";
 import {
   UserOutlined,
   MailOutlined,
   PhoneOutlined,
   LockOutlined,
 } from "@ant-design/icons";
-
-const { Title, Text } = Typography;
+import {
+  IconAuthUser,
+  IconEmail,
+  IconLock,
+  IconPhone,
+} from "../components/Common/Icons";
 
 const Register = () => {
   const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    phone: "",
+    password: "",
+  });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 
-  const handleRegister = (values) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleRegister = (e) => {
+    e.preventDefault();
     setError("");
+
+    // Logic kiểm tra pattern (thay thế rules của AntD)
+    if (!/^[a-zA-Z0-9 ]+$/.test(formData.username)) {
+      setError("Tên đăng nhập không được chứa ký tự đặc biệt!");
+      return;
+    }
+    if (!/^[0-9]{10,}$/.test(formData.phone)) {
+      setError("SĐT phải là số, từ 10 chữ số trở lên!");
+      return;
+    }
+    if (formData.password.length < 6) {
+      setError("Mật khẩu tối thiểu 6 ký tự!");
+      return;
+    }
+
     const existingUsers = JSON.parse(localStorage.getItem("userList")) || [];
 
-    if (existingUsers.some((u) => u.username === values.username)) {
+    if (existingUsers.some((u) => u.username === formData.username)) {
       setError("Tên đăng nhập đã tồn tại!");
       return;
     }
 
     localStorage.setItem(
       "userList",
-      JSON.stringify([...existingUsers, values]),
+      JSON.stringify([...existingUsers, formData]),
     );
     setSuccess(true);
     setTimeout(() => navigate("/login"), 800);
   };
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "#D9D9D9",
-        padding: 16,
-      }}
-    >
-      <Card
-        style={{
-          width: "100%",
-          maxWidth: 440,
-          borderRadius: 12,
-          boxShadow: "0 2px 4px #000",
-          border: "2px solid #DCD7C9",
-        }}
-      >
-        <div style={{ textAlign: "center", marginBottom: 24 }}>
-          <Title level={3} style={{ margin: 0 }}>
-            Đăng Ký
-          </Title>
-          <Text type="secondary">Tạo tài khoản quản trị mới</Text>
+    <div className="login-container">
+      <div className="login-card" style={{ maxWidth: "440px" }}>
+        <div className="login-header">
+          <h2>Đăng Ký</h2>
+          <p className="subtitle">Tạo tài khoản quản trị mới</p>
         </div>
 
         {error && (
-          <Alert
-            title={error}
-            type="error"
-            showIcon
-            style={{ marginBottom: 16 }}
-          />
+          <div className="alert alert-error">
+            <span className="alert-icon">⚠</span> {error}
+          </div>
         )}
         {success && (
-          <Alert
-            title="Đăng ký thành công! Đang chuyển hướng..."
-            type="success"
-            showIcon
-            style={{ marginBottom: 16 }}
-          />
+          <div className="alert alert-success">
+            <span className="alert-icon">✓</span> Đăng ký thành công! Đang
+            chuyển hướng...
+          </div>
         )}
 
-        <Form
-          layout="vertical"
-          onFinish={handleRegister}
-          autoComplete="off"
-          requiredMark={false}
-        >
-          <Form.Item
-            label="Tên đăng nhập"
-            name="username"
-            rules={[
-              { required: true, message: "Vui lòng nhập tên!" },
-              {
-                pattern: /^[a-zA-Z0-9 ]+$/,
-                message: "Không được chứa ký tự đặc biệt!",
-              },
-            ]}
-          >
-            <Input
-              prefix={<UserOutlined />}
-              placeholder="Nhập tên của bạn..."
-            />
-          </Form.Item>
+        <form onSubmit={handleRegister} className="login-form">
+          <div className="form-group">
+            <label>Tên đăng nhập</label>
+            <div className="input-wrapper">
+              <span className="prefix-icon">
+                <IconAuthUser />
+              </span>
+              <input
+                type="text"
+                name="username"
+                required
+                placeholder="Nhập tên của bạn..."
+                className="login-input"
+                value={formData.username}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
 
-          <Form.Item
-            label="Email"
-            name="email"
-            rules={[
-              { required: true, message: "Vui lòng nhập email!" },
-              { type: "email", message: "Email không hợp lệ!" },
-            ]}
-          >
-            <Input prefix={<MailOutlined />} placeholder="example@gmail.com" />
-          </Form.Item>
+          <div className="form-group">
+            <label>Email</label>
+            <div className="input-wrapper">
+              <span className="prefix-icon">
+                <IconEmail />
+              </span>
+              <input
+                type="email"
+                name="email"
+                required
+                placeholder="example@gmail.com"
+                className="login-input"
+                value={formData.email}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
 
-          <Form.Item
-            label="Số điện thoại"
-            name="phone"
-            rules={[
-              { required: true, message: "Vui lòng nhập SĐT!" },
-              {
-                pattern: /^[0-9]{10,}$/,
-                message: "SĐT phải là số, từ 10 chữ số trở lên!",
-              },
-            ]}
-          >
-            <Input prefix={<PhoneOutlined />} placeholder="09xxxxxxxx" />
-          </Form.Item>
+          <div className="form-group">
+            <label>Số điện thoại</label>
+            <div className="input-wrapper">
+              <span className="prefix-icon">
+                <IconPhone />
+              </span>
+              <input
+                type="text"
+                name="phone"
+                required
+                placeholder="09xxxxxxxx"
+                className="login-input"
+                value={formData.phone}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
 
-          <Form.Item
-            label="Mật khẩu"
-            name="password"
-            rules={[
-              { required: true, message: "Vui lòng nhập mật khẩu!" },
-              { min: 6, message: "Mật khẩu tối thiểu 6 ký tự!" },
-            ]}
-          >
-            <Input.Password prefix={<LockOutlined />} placeholder="********" />
-          </Form.Item>
+          <div className="form-group">
+            <label>Mật khẩu</label>
+            <div className="input-wrapper">
+              <span className="prefix-icon">
+                <IconLock />
+              </span>
+              <input
+                type="password"
+                name="password"
+                required
+                placeholder="********"
+                className="login-input"
+                value={formData.password}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
 
-          <Form.Item style={{ marginBottom: 8 }}>
-            <Button type="primary" htmlType="submit" block>
-              Đăng ký ngay
-            </Button>
-          </Form.Item>
-        </Form>
+          <button type="submit" className="login-submit-btn">
+            Đăng ký ngay
+          </button>
+        </form>
 
-        <div style={{ textAlign: "center" }}>
-          <Text type="secondary">Đã có tài khoản? </Text>
-          <Button
-            type="link"
-            onClick={() => navigate("/login")}
-            style={{ padding: 0 }}
-          >
+        <div className="login-footer">
+          <span>Đã có tài khoản? </span>
+          <button className="link-btn" onClick={() => navigate("/login")}>
             Đăng nhập
-          </Button>
+          </button>
         </div>
-      </Card>
+      </div>
     </div>
   );
 };
