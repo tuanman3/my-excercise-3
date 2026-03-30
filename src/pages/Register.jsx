@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
+  IconAlert,
   IconAuthUser,
   IconEmail,
   IconLock,
   IconPhone,
+  IconTick,
 } from "../components/Common/Icons";
 
 const Register = () => {
@@ -81,13 +83,18 @@ const Register = () => {
 
         {error && (
           <div className="alert alert-error">
-            <span className="alert-icon">⚠</span> {error}
+            <span className="alert-icon">
+              <IconAlert />
+            </span>
+            {error}
           </div>
         )}
         {success && (
           <div className="alert alert-success">
-            <span className="alert-icon">✓</span> Kích hoạt thành công! Đang
-            chuyển hướng...
+            <span className="alert-icon">
+              <IconTick />
+            </span>
+            Kích hoạt thành công! Đang chuyển hướng...
           </div>
         )}
 

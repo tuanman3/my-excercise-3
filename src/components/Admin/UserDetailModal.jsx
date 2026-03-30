@@ -5,7 +5,7 @@ const UserDetailModal = ({ isOpen, onClose, user }) => {
 
   return (
     <div className="modal-overlay">
-      <div className="confirm-modal" style={{ width: "400px" }}>
+      <div className="confirm-modal" style={{ textAlign: "left" }}>
         <h3>Thông tin chi tiết</h3>
         <div style={{ textAlign: "center", marginBottom: "20px" }}>
           <img
@@ -22,17 +22,20 @@ const UserDetailModal = ({ isOpen, onClose, user }) => {
             alt=""
           />
         </div>
-        <div className="detail-item" style={{ marginBottom: "10px" }}>
+        <div className="detail-item">
           <strong>Họ tên:</strong> <span>{user.name}</span>
         </div>
-        <div className="detail-item" style={{ marginBottom: "10px" }}>
+        <div className="detail-item">
           <strong>Email:</strong> <span>{user.email}</span>
         </div>
-        <div className="detail-item" style={{ marginBottom: "10px" }}>
-          <strong>Ngày tạo:</strong> <span>{user.updateDate}</span>
+        <div className="detail-item">
+          <strong>Số điện thoại:</strong> <span>{user.phone}</span>
         </div>
         <div className="detail-item">
           <strong>Trạng thái:</strong> <span>{user.status}</span>
+        </div>
+        <div className="detail-item">
+          <strong>Ngày tạo:</strong> <span>{user.updateDate}</span>
         </div>
         <div className="modal-btns" style={{ marginTop: "20px" }}>
           <button className="btn-confirm btn-modal" onClick={onClose}>

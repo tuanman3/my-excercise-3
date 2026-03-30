@@ -63,8 +63,8 @@ export const IconDelete = () => (
 export const IconTick = () => (
   <svg
     xmlns="http://www.w3.org"
-    width="24"
-    height="24"
+    width="20"
+    height="20"
     viewBox="0 0 24 24"
     fill="none"
     stroke="#4CAF50"
@@ -257,42 +257,26 @@ export const IconPlus = () => (
   </svg>
 );
 
-//Icon Menu Close
-export const IconMenuUnfold = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <line x1="3" y1="12" x2="15" y2="12"></line>
-    <line x1="3" y1="6" x2="21" y2="6"></line>
-    <line x1="3" y1="18" x2="21" y2="18"></line>
-    <polyline points="19 8 23 12 19 16"></polyline>
-  </svg>
-);
+// Icon Alert
+export const IconAlert = () => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      style={{ verticalAlign: "middle" }}
+    >
+      <path d="M12 2L1 21H23L12 2Z" />
 
-//Icon Menu Open
-export const IconMenuFold = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <line x1="9" y1="12" x2="21" y2="12"></line>
-    <line x1="3" y1="6" x2="21" y2="6"></line>
-    <line x1="3" y1="18" x2="21" y2="18"></line>
-    <polyline points="7 16 3 12 7 8"></polyline>
-  </svg>
-);
+      <path d="M12 8V14" />
+
+      <path d="M12 18H12.01" />
+    </svg>
+  );
+};

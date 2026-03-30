@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 const UserFormModal = ({ isOpen, onClose, onSave, editingUser }) => {
   const [formData, setFormData] = useState({
+    id: editingUser?.id || "",
     username: editingUser?.username || "",
     name: editingUser?.name || "",
     email: editingUser?.email || "",
@@ -14,11 +15,22 @@ const UserFormModal = ({ isOpen, onClose, onSave, editingUser }) => {
 
   return (
     <div className="modal-overlay">
-      <div
-        className="confirm-modal"
-        style={{ width: "450px", textAlign: "left" }}
-      >
-        <h3>{editingUser ? "Chỉnh sửa người dùng" : "Thêm người dùng mới"}</h3>
+      <div className="confirm-modal">
+        <h3 style={{ marginBottom: "10px" }}>
+          {editingUser ? "Chỉnh sửa người dùng" : "Thêm người dùng mới"}
+        </h3>
+
+        <div className="input-group">
+          <label className="input-label">ID</label>
+          <input
+            name="id"
+            className="input-field"
+            value={formData.id}
+            onChange={(e) => setFormData({ ...formData, id: e.target.value })}
+            disabled={editingUser}
+            style={{ cursor: "not-allowed" }}
+          />
+        </div>
 
         {/* Username field to Signup */}
         <div className="input-group">
@@ -30,7 +42,8 @@ const UserFormModal = ({ isOpen, onClose, onSave, editingUser }) => {
             onChange={(e) =>
               setFormData({ ...formData, username: e.target.value })
             }
-            disabled={!!editingUser}
+            disabled={editingUser}
+            style={{ cursor: "not-allowed" }}
           />
         </div>
 

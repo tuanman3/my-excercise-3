@@ -2,11 +2,14 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login } from "../store/authSlice";
-// Giữ lại icon nếu bạn vẫn dùng @ant-design/icons,
-// hoặc thay bằng icon SVG/FontAwesome tương ứng
-import { UserOutlined, LockOutlined } from "@ant-design/icons";
+
 import "../styles/Main.css";
-import { IconAuthUser, IconLock } from "../components/Common/Icons";
+import {
+  IconAlert,
+  IconAuthUser,
+  IconLock,
+  IconTick,
+} from "../components/Common/Icons";
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -22,11 +25,10 @@ const Login = () => {
   };
 
   const handleLogin = (e) => {
-    e.preventDefault(); // Thay thế onFinish của AntD
+    e.preventDefault();
     setLoading(true);
     setError("");
 
-    // Giữ nguyên logic check LocalStorage của bạn
     const userList = JSON.parse(localStorage.getItem("userList")) || [];
     const foundUser = userList.find(
       (u) =>
@@ -58,13 +60,19 @@ const Login = () => {
 
         {success && (
           <div className="alert alert-success">
-            <span className="alert-icon">✓</span> {success}
+            <span className="alert-icon">
+              <IconTick />
+            </span>
+            {success}
           </div>
         )}
 
         {error && (
           <div className="alert alert-error">
-            <span className="alert-icon">⚠</span> {error}
+            <span className="alert-icon">
+              <IconAlert />
+            </span>
+            {error}
           </div>
         )}
 

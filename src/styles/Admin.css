@@ -272,10 +272,14 @@
   background: white;
   padding: 25px;
   border-radius: 12px;
-  width: 350px;
+  width: 400px;
   text-align: center;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   animation: zoomIn 0.2s ease-out;
+}
+
+.detail-item {
+  margin-bottom: 10px;
 }
 
 .ant-btn {
