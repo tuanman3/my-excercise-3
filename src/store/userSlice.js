@@ -10,7 +10,7 @@ const initialUsers = [
     phone: "0901234567",
     status: "chưa kích hoạt",
     updateDate: "27/03/2026",
-    password: "", // Để trống để Test trang Register (Kích hoạt)
+    password: "",
   },
   {
     id: 2,
@@ -20,7 +20,7 @@ const initialUsers = [
     phone: "0908888999",
     status: "đã kích hoạt",
     updateDate: "27/03/2026",
-    password: "123", // Đã có pass để Test Login
+    password: "123456",
   },
   {
     id: 3,
@@ -38,7 +38,7 @@ const loadUsers = () => {
   try {
     const saved = localStorage.getItem("userList");
     if (!saved) {
-      // Nếu chưa có userList trong máy, lưu data mẫu vào luôn
+      // if not have userList in browser, save sample data into
       localStorage.setItem("userList", JSON.stringify(initialUsers));
       return initialUsers;
     }
@@ -53,10 +53,6 @@ const saveUsers = (users) => {
 };
 
 const nextId = (users) => {
-  // if (!users || users.length === 0) return 1;
-  // // Lấy ra tất cả id, lọc bỏ các giá trị không phải số, sau đó tìm Max
-  // const ids = users.map((u) => Number(u.id)).filter((id) => !isNaN(id));
-  // return ids.length === 0 ? 1 : Math.max(...ids) + 1;
   users.length === 0 ? 1 : Math.max(...users.map((u) => u.id)) + 1;
 };
 
@@ -73,7 +69,7 @@ const userSlice = createSlice({
         id: nextId(state.list),
         updateDate: new Date().toLocaleDateString("vi-VN"),
         status: action.payload.status || "chưa kích hoạt",
-        password: "", // Admin tạo thì chưa có pass
+        password: "", // none pass if admin create
       };
       state.list.push(newUser);
       saveUsers(state.list);

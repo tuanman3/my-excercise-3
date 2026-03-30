@@ -27,16 +27,16 @@ const Register = () => {
     e.preventDefault();
     setError("");
 
-    // 1. Validation cơ bản
+    // Validation
     if (formData.password.length < 6) {
       setError("Mật khẩu tối thiểu 6 ký tự!");
       return;
     }
 
-    // 2. Lấy danh sách user hiện có (từ Admin hoặc mặc định)
+    // get user list
     const userList = JSON.parse(localStorage.getItem("userList")) || [];
 
-    // 3. Tìm user khớp Username, Email VÀ Phone
+    // fint user match with Username, Email and Phone
     const userIndex = userList.findIndex(
       (u) =>
         u.username === formData.username &&
@@ -44,7 +44,7 @@ const Register = () => {
         u.phone === formData.phone,
     );
 
-    // 4. Kiểm tra điều kiện kích hoạt
+    // chech conditions activate
     if (userIndex === -1) {
       setError("Thông tin không khớp với dữ liệu nhân viên hệ thống!");
       return;
@@ -55,7 +55,7 @@ const Register = () => {
       return;
     }
 
-    // 5. Cập nhật mật khẩu và kích hoạt tài khoản
+    // update password and activate account
     const updatedUserList = [...userList];
     updatedUserList[userIndex] = {
       ...updatedUserList[userIndex],
@@ -64,7 +64,7 @@ const Register = () => {
       updateDate: new Date().toLocaleDateString("vi-VN"),
     };
 
-    // 6. Lưu lại vào LocalStorage
+    // Save on LocalStorage
     localStorage.setItem("userList", JSON.stringify(updatedUserList));
 
     setSuccess(true);
@@ -130,7 +130,7 @@ const Register = () => {
             </div>
           </div>
 
-          {/* SĐT */}
+          {/* Phone */}
           <div className="form-group">
             <label>Số điện thoại</label>
             <div className="input-wrapper">
@@ -149,7 +149,7 @@ const Register = () => {
             </div>
           </div>
 
-          {/* Mật khẩu mới */}
+          {/* New Password */}
           <div className="form-group">
             <label>Thiết lập mật khẩu mới</label>
             <div className="input-wrapper">

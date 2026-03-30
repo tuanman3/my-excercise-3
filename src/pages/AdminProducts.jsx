@@ -37,7 +37,7 @@ const AdminProducts = () => {
               <th>Tên sản phẩm</th>
               <th>Giá</th>
               <th>Kho</th>
-              <th style={{ textAlign: "right" }}>Thao tác</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>

@@ -13,7 +13,7 @@ const LogoutModal = ({ isOpen, onCancel, onConfirm }) => {
             Hủy bỏ
           </button>
           <button className="btn-confirm btn-modal" onClick={onConfirm}>
-            Xác nhận
+            Đăng xuất
           </button>
         </div>
       </div>

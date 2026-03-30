@@ -20,7 +20,7 @@ const UserFormModal = ({ isOpen, onClose, onSave, editingUser }) => {
       >
         <h3>{editingUser ? "Chỉnh sửa người dùng" : "Thêm người dùng mới"}</h3>
 
-        {/* Trường Username - Cực kỳ quan trọng để Signup */}
+        {/* Username field to Signup */}
         <div className="input-group">
           <label className="input-label">Tên đăng nhập (Username)</label>
           <input
@@ -30,7 +30,7 @@ const UserFormModal = ({ isOpen, onClose, onSave, editingUser }) => {
             onChange={(e) =>
               setFormData({ ...formData, username: e.target.value })
             }
-            disabled={!!editingUser} // Thường username không nên cho sửa sau khi tạo
+            disabled={!!editingUser}
           />
         </div>
 

@@ -42,6 +42,7 @@
 
 .sidebar-menu-item {
   padding: 15px;
+  color: #dcd7c9;
   cursor: pointer;
   display: flex;
   width: 90%;
@@ -94,10 +95,9 @@
   font-size: 20px;
   cursor: pointer;
 
-  /* Hiệu ứng mờ dần trong 0.3 giây */
-  opacity: 0; /* Mặc định ẩn */
-  animation: fadeIn 0.3s ease-in forwards; /* Chạy animation hiện lên */
-  animation-delay: 0.1s; /* Đợi sidebar trượt một chút rồi mới hiện cho thật mượt */
+  opacity: 0;
+  animation: fadeIn 0.3s ease-in forwards;
+  animation-delay: 0.1s;
 }
 
 /* Định nghĩa hiệu ứng mờ -> rõ */
@@ -166,20 +166,29 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  padding: 0 10px;
+}
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 .add-btn {
-  background-color: #e0dbcf;
+  background-color: #dcd7c9;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-weight: bold;
 }
 
+.add-btn > span {
+  text-align: center;
+}
+
 /* Data table */
 .admin-table-container {
   background-color: white;
-  padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
@@ -269,9 +278,15 @@
   padding: 25px;
   border-radius: 12px;
   width: 350px;
-  text-align: left;
+  text-align: center;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   animation: zoomIn 0.2s ease-out;
+}
+
+.ant-btn {
+  background-color: #dcd7c9;
+  color: #000;
+  height: 33px;
 }
 
 .modal-btns {
@@ -281,15 +296,15 @@
 }
 
 .btn-cancel {
-  background: #d6d6d6;
-  border: none;
+  background: #fff;
+  border: 1px solid #dcd7c9;
   border-radius: 6px;
   cursor: pointer;
 }
 
 .btn-confirm {
-  background: #e77e72;
-  color: #fff;
+  background: #dcd7c9;
+  color: #000;
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -312,6 +327,74 @@
     inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* ----- Status column ----- */
+.status-cell {
+  cursor: pointer;
+  padding-left: 15px !important;
+}
+
+/* Wrapper checkbox & text */
+.status-checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* --- CHECKBOX FOR STATUS --- */
+.status-checkbox {
+  appearance: none; /* hidden checkbox default of browser */
+  -webkit-appearance: none;
+
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* NOT ACTIVE (Default state) */
+  background-color: #e2dfd6;
+  border: 1px solid #c4c0ae;
+}
+
+.status-checkbox:not(:checked):hover {
+  background-color: #d6d2c4;
+}
+
+/* ACTIVE (Checked state) */
+.status-checkbox:checked {
+  background-color: #fff;
+  border: 1px solid #c4c0ae;
+}
+
+.status-checkbox:checked:hover {
+  border-color: #a49f8c;
+}
+
+/* Tick Check (only show when checked) */
+.status-checkbox::after {
+  content: "✔";
+  color: transparent;
+  font-size: 16px;
+  position: absolute;
+  transition: color 0.2s ease;
+  font-weight: bold;
+}
+
+.status-checkbox:checked::after {
+  color: #48bb78;
+}
+
+.status-text {
+  color: #454545;
+  font-size: 14px;
+}
+
+/* hover row Table keep cursor: pointer */
+
 @keyframes zoomIn {
   from {
     transform: scale(0.8);
@@ -326,5 +409,41 @@
 @media (max-width: 1165px) {
   .admin-sidebar {
     display: none;
+  }
+}
+
+/* --- RESPONSIVE below 790px --- */
+@media screen and (max-width: 790px) {
+  /* 1. Xử lý Header (như yêu cầu trước) */
+  .content-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+  .header-actions {
+    width: 100%;
+    gap: 10px;
+  }
+
+  /* Table only keep 3 column: name, status and actions */
+
+  /* hidden col email (col 2) và update date (col 3) in thead */
+  .admin-table thead th:nth-child(2),
+  .admin-table thead th:nth-child(3) {
+    display: none;
+  }
+
+  /* hidden col email (col 2) và update date (col 3) in tbody */
+  .admin-table tbody td:nth-child(2),
+  .admin-table tbody td:nth-child(3) {
+    display: none;
+  }
+
+  /* optimize distance for table on mobile */
+  .admin-table-container {
+    overflow-x: auto; /*  horizontal scroll  */
+  }
+
+  .admin-table {
+    min-width: 100%; /* the table always fills the entire container. */
   }
 }

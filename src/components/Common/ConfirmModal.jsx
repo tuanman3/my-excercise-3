@@ -16,21 +16,18 @@ const ConfirmModal = ({
 
   return (
     <div className="modal-overlay">
-      <div className="confirm-modal" style={{ width: "400px" }}>
+      <div className="confirm-modal">
         <div className="modal-header">
-          <h3 style={{ margin: 0 }}>{title}</h3>
+          <h3>{title}</h3>
         </div>
 
-        <div className="modal-body" style={{ margin: "20px 0" }}>
+        <div className="modal-body">
           {description && (
             <p style={{ color: "#666", lineHeight: "1.5" }}>{description}</p>
           )}
         </div>
 
-        <div
-          className="modal-btns"
-          style={{ display: "flex", justifyContent: "flex-end", gap: "12px" }}
-        >
+        <div className="modal-btns">
           <button className="btn-cancel btn-modal" onClick={onCancel}>
             {cancelText}
           </button>
