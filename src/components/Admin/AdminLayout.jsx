@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import "../../styles/Admin.css";
@@ -15,20 +15,23 @@ const AdminLayout = ({ children, userName, onUpdateAvatar }) => {
     navigate("/login");
   };
 
-  const toggleSidebar = () => setCollapsed(!collapsed);
+  const toggleSidebar = useCallback(() => {
+    setCollapsed((prev) => !prev);
+  }, []);
 
   return (
     <div className="admin-wrapper">
-      <Sidebar collapsed={collapsed} toggleSidebar={toggleSidebar} />
-      <div className={`admin-main ${collapsed ? "full-width" : ""}`}>
-        <Header
-          collapsed={collapsed}
-          toggleSidebar={toggleSidebar}
-          onLogout={() => setIsLogoutModalOpen(true)}
-          userName={userName}
-          onUpdateAvatar={onUpdateAvatar}
-        />
-        <div className="content-wrapper">{children}</div>
+      <Header
+        toggleSidebar={toggleSidebar}
+        onLogout={() => setIsLogoutModalOpen(true)}
+        userName={userName}
+        onUpdateAvatar={onUpdateAvatar}
+      />
+      <div className="admin-body">
+        <Sidebar collapsed={collapsed} />
+        <div className={`admin-main ${collapsed ? "collapsed" : ""}`}>
+          <div className="content-wrapper">{children}</div>
+        </div>
       </div>
       <LogoutModal
         isOpen={isLogoutModalOpen}

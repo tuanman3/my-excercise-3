@@ -14,21 +14,12 @@ const menuItems = [
   },
 ];
 
-const Sidebar = ({ collapsed, toggleSidebar }) => {
+const Sidebar = ({ collapsed }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
   return (
     <div className={`admin-sidebar ${!collapsed ? "collapsed" : ""}`}>
-      <div className="sidebar-header">
-        {collapsed && (
-          <>
-            <button className="toggle-sidebar-btn" onClick={toggleSidebar}>
-              <IconMenu />
-            </button>
-          </>
-        )}
-      </div>
       <div className="sidebar-menu">
         {menuItems.map((item) => (
           <div
