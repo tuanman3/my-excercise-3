@@ -237,34 +237,35 @@ const AdminDashboard = () => {
               }))
             }
           />
-
-          <button
-            className="add-btn btn-modal"
-            onClick={() => {
-              setEditingUser(null);
-              setIsFormModalOpen(true);
-            }}
-            style={{ width: "126px", height: "33px" }}
-          >
-            <IconPlus /> <span>Thêm</span>
-          </button>
-
-          <Tooltip
-            title={isFilterPanelOpen ? "Đóng bộ lọc" : "Mở bộ lọc nâng cao"}
-          >
-            <Button
-              type="primary"
-              icon={<FilterOutlined />}
-              size="large"
-              onClick={() => setIsFilterPanelOpen(!isFilterPanelOpen)}
-              style={{
-                backgroundColor: isFilterPanelOpen ? "#d9d9d9" : "#faad14",
-                borderColor: isFilterPanelOpen ? "#d9d9d9" : "#faad14",
-                color: isFilterPanelOpen ? "#666" : "#fff",
+          <div className="actions-panel">
+            <button
+              className="add-btn btn-modal"
+              onClick={() => {
+                setEditingUser(null);
+                setIsFormModalOpen(true);
               }}
-              className="filter-toggle-btn"
-            ></Button>
-          </Tooltip>
+              style={{ height: "33px" }}
+            >
+              <IconPlus /> <span>Thêm</span>
+            </button>
+
+            <Tooltip
+              title={isFilterPanelOpen ? "Đóng bộ lọc" : "Mở bộ lọc nâng cao"}
+            >
+              <Button
+                type="primary"
+                icon={<FilterOutlined />}
+                size="large"
+                onClick={() => setIsFilterPanelOpen(!isFilterPanelOpen)}
+                style={{
+                  backgroundColor: isFilterPanelOpen ? "#d9d9d9" : "#faad14",
+                  borderColor: isFilterPanelOpen ? "#d9d9d9" : "#faad14",
+                  color: isFilterPanelOpen ? "#666" : "#fff",
+                }}
+                className="filter-toggle-btn"
+              ></Button>
+            </Tooltip>
+          </div>
         </div>
       </div>
 
@@ -311,8 +312,8 @@ const AdminDashboard = () => {
                     setIsDetailModalOpen(true);
                   }}
                 >
-                  <td>{item.name}</td>
-                  <td>{item.email}</td>
+                  <td title={item.name}>{item.name}</td>
+                  <td title={item.email}>{item.email}</td>
                   <td>{item.updateDate}</td>
                   <td
                     className="status-cell"
