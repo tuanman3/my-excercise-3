@@ -1,7 +1,13 @@
 import { useState } from "react";
 import InputField from "../Common/InputField";
 
-const DynamicForm = ({ formModel, onSubmit, buttonText }) => {
+const DynamicForm = ({
+  formModel,
+  onSubmit,
+  buttonText,
+  disabled,
+  customButtonClass,
+}) => {
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
 
@@ -51,6 +57,8 @@ const DynamicForm = ({ formModel, onSubmit, buttonText }) => {
       ))}
       <button
         type="submit"
+        disabled={disabled}
+        className={customButtonClass}
         style={{
           backgroundColor: "#e0dbcf",
           border: "none",

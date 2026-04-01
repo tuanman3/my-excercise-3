@@ -6,6 +6,7 @@ const InputField = ({
   onChange,
   error,
   placeholder,
+  disabled,
 }) => {
   return (
     <div className="input-group">
@@ -16,6 +17,7 @@ const InputField = ({
         value={value}
         onChange={onChange}
         placeholder={placeholder}
+        disabled={disabled}
         className={`input-field ${error ? "error" : ""}`}
       />
       <span className="error-message">{error ? error : ""}</span>

@@ -53,7 +53,7 @@ const saveUsers = (users) => {
 };
 
 const nextId = (users) => {
-  users.length === 0 ? 1 : Math.max(...users.map((u) => u.id)) + 1;
+  return users.length === 0 ? 1 : Math.max(...users.map((u) => u.id)) + 1;
 };
 
 const userSlice = createSlice({
@@ -110,6 +110,14 @@ const userSlice = createSlice({
         user.updateDate = new Date().toLocaleDateString("vi-VN");
         saveUsers(state.list);
       }
+      state.notify = {
+        show: true,
+        msg:
+          user.status === "đã kích hoạt"
+            ? "Đã kích hoạt tài khoản!"
+            : "Đã hủy kích hoạt!",
+        type: "success",
+      };
     },
     clearNotify: (state) => {
       state.notify = { show: false, msg: "", type: "" };

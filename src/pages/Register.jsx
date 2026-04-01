@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   IconAlert,
@@ -8,45 +8,61 @@ import {
   IconPhone,
   IconTick,
 } from "../components/Common/Icons";
+import DynamicForm from "../components/Form/DynamicForm"; // Giả sử path này
 
 const Register = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    phone: "",
-    password: "",
-  });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  // Cấu hình các trường nhập liệu
+  const registerModel = [
+    {
+      name: "username",
+      label: "Tên đăng nhập (Username)",
+      placeholder: "Nhập username được cấp...",
+      prefixIcon: <IconAuthUser />,
+      rules: { required: true },
+    },
+    {
+      name: "email",
+      label: "Email",
+      type: "email",
+      placeholder: "Email đã đăng ký với Admin...",
+      prefixIcon: <IconEmail />,
+      rules: { required: true },
+    },
+    {
+      name: "phone",
+      label: "Số điện thoại",
+      placeholder: "Số điện thoại đã đăng ký...",
+      prefixIcon: <IconPhone />,
+      rules: { required: true },
+    },
+    {
+      name: "password",
+      label: "Thiết lập mật khẩu mới",
+      type: "password",
+      placeholder: "Tối thiểu 6 ký tự",
+      prefixIcon: <IconLock />,
+      rules: { required: true, minLength: 6 },
+    },
+  ];
 
-  const handleRegister = (e) => {
-    e.preventDefault();
+  const handleRegisterLogic = (data) => {
     setError("");
-
-    // Validation
-    if (formData.password.length < 6) {
-      setError("Mật khẩu tối thiểu 6 ký tự!");
-      return;
-    }
 
     // get user list
     const userList = JSON.parse(localStorage.getItem("userList")) || [];
 
-    // fint user match with Username, Email and Phone
+    // tìm user match
     const userIndex = userList.findIndex(
       (u) =>
-        u.username === formData.username &&
-        u.email === formData.email &&
-        u.phone === formData.phone,
+        u.username === data.username &&
+        u.email === data.email &&
+        u.phone === data.phone,
     );
 
-    // chech conditions activate
     if (userIndex === -1) {
       setError("Thông tin không khớp với dữ liệu nhân viên hệ thống!");
       return;
@@ -57,16 +73,15 @@ const Register = () => {
       return;
     }
 
-    // update password and activate account
+    // update password
     const updatedUserList = [...userList];
     updatedUserList[userIndex] = {
       ...updatedUserList[userIndex],
-      password: formData.password, // Cập nhật mật khẩu mới
-      status: "đã kích hoạt", // Đổi trạng thái
+      password: data.password,
+      status: "đã kích hoạt",
       updateDate: new Date().toLocaleDateString("vi-VN"),
     };
 
-    // Save on LocalStorage
     localStorage.setItem("userList", JSON.stringify(updatedUserList));
 
     setSuccess(true);
@@ -89,6 +104,7 @@ const Register = () => {
             {error}
           </div>
         )}
+
         {success && (
           <div className="alert alert-success">
             <span className="alert-icon">
@@ -98,87 +114,14 @@ const Register = () => {
           </div>
         )}
 
-        <form onSubmit={handleRegister} className="login-form">
-          {/* Tên đăng nhập */}
-          <div className="form-group">
-            <label>Tên đăng nhập (Username)</label>
-            <div className="input-wrapper">
-              <span className="prefix-icon">
-                <IconAuthUser />
-              </span>
-              <input
-                type="text"
-                name="username"
-                required
-                placeholder="Nhập username được cấp..."
-                className="login-input"
-                value={formData.username}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-
-          {/* Email */}
-          <div className="form-group">
-            <label>Email</label>
-            <div className="input-wrapper">
-              <span className="prefix-icon">
-                <IconEmail />
-              </span>
-              <input
-                type="email"
-                name="email"
-                required
-                placeholder="Email đã đăng ký với Admin..."
-                className="login-input"
-                value={formData.email}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-
-          {/* Phone */}
-          <div className="form-group">
-            <label>Số điện thoại</label>
-            <div className="input-wrapper">
-              <span className="prefix-icon">
-                <IconPhone />
-              </span>
-              <input
-                type="text"
-                name="phone"
-                required
-                placeholder="Số điện thoại đã đăng ký..."
-                className="login-input"
-                value={formData.phone}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-
-          {/* New Password */}
-          <div className="form-group">
-            <label>Thiết lập mật khẩu mới</label>
-            <div className="input-wrapper">
-              <span className="prefix-icon">
-                <IconLock />
-              </span>
-              <input
-                type="password"
-                name="password"
-                required
-                placeholder="Tối thiểu 6 ký tự"
-                className="login-input"
-                value={formData.password}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-
-          <button type="submit" className="login-submit-btn">
-            Kích hoạt ngay
-          </button>
-        </form>
+        {/* Sử dụng DynamicForm đã được tinh chỉnh style */}
+        <DynamicForm
+          formModel={registerModel}
+          buttonText="Kích hoạt ngay"
+          onSubmit={handleRegisterLogic}
+          // Bạn có thể thêm props className để DynamicForm render đúng class CSS của bạn
+          customButtonClass="login-submit-btn"
+        />
 
         <div className="login-footer">
           <span>Đã kích hoạt? </span>

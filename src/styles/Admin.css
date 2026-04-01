@@ -188,7 +188,6 @@
 /* Data table */
 .admin-table-container {
   background-color: white;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 .admin-table {
@@ -243,6 +242,21 @@
   color: #e74c3c;
   transform: scale(1.1);
   transition: all 0.2s ease;
+}
+.ant-table,
+.ant-table-cell {
+  border: 1px solid #3f4e4f !important;
+  border-radius: 0 !important;
+}
+
+th.ant-table-cell {
+  background: #dcd7c9 !important;
+}
+
+tr > td.ant-table-cell-row-hover {
+  background-color: #dcd7c979 !important;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .logout-btn {

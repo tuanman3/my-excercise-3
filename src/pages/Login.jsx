@@ -10,44 +10,60 @@ import {
   IconLock,
   IconTick,
 } from "../components/Common/Icons";
+import DynamicForm from "../components/Form/DynamicForm";
+
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({ username: "", password: "" });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  // Cấu hình form
+  const loginModel = [
+    {
+      name: "username",
+      label: "Tên đăng nhập",
+      placeholder: "Tên đã đăng ký...",
+      prefixIcon: <IconAuthUser />,
+      rules: { required: true },
+    },
+    {
+      name: "password",
+      label: "Mật khẩu",
+      type: "password",
+      placeholder: "********",
+      prefixIcon: <IconLock />,
+      rules: { required: true },
+    },
+  ];
 
-  const handleLogin = (e) => {
-    e.preventDefault();
+  const handleLoginLogic = (data) => {
     setLoading(true);
     setError("");
 
-    const userList = JSON.parse(localStorage.getItem("userList")) || [];
-    const foundUser = userList.find(
-      (u) =>
-        u.username === formData.username && u.password === formData.password,
-    );
-
-    if (!foundUser) {
-      setError("Tên đăng nhập hoặc mật khẩu không đúng!");
-      setLoading(false);
-      return;
-    }
-
-    setSuccess("Đăng nhập thành công!");
-    dispatch(login(foundUser));
-
+    // Giả lập độ trễ để thấy loading state
     setTimeout(() => {
-      navigate("/admin/dashboard");
-      setLoading(false);
-    }, 300);
+      const userList = JSON.parse(localStorage.getItem("userList")) || [];
+      const foundUser = userList.find(
+        (u) => u.username === data.username && u.password === data.password,
+      );
+
+      if (!foundUser) {
+        setError("Tên đăng nhập hoặc mật khẩu không đúng!");
+        setLoading(false);
+        return;
+      }
+
+      setSuccess("Đăng nhập thành công!");
+      dispatch(login(foundUser));
+
+      setTimeout(() => {
+        navigate("/admin/dashboard");
+        setLoading(false);
+      }, 300);
+    }, 500);
   };
 
   return (
@@ -76,51 +92,15 @@ const Login = () => {
           </div>
         )}
 
-        <form onSubmit={handleLogin} className="login-form">
-          <div className="form-group">
-            <label>Tên đăng nhập</label>
-            <div className="input-wrapper">
-              <span className="prefix-icon">
-                <IconAuthUser />
-              </span>
-              <input
-                type="text"
-                name="username"
-                required
-                placeholder="Tên đã đăng ký..."
-                value={formData.username}
-                onChange={handleChange}
-                className="login-input"
-              />
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label>Mật khẩu</label>
-            <div className="input-wrapper">
-              <span className="prefix-icon">
-                <IconLock />
-              </span>
-              <input
-                type="password"
-                name="password"
-                required
-                placeholder="********"
-                value={formData.password}
-                onChange={handleChange}
-                className="login-input"
-              />
-            </div>
-          </div>
-
-          <button
-            type="submit"
-            className={`login-submit-btn ${loading ? "loading" : ""}`}
-            disabled={loading}
-          >
-            {loading ? "Đang xử lý..." : "Đăng nhập"}
-          </button>
-        </form>
+        {/* DynamicForm */}
+        <DynamicForm
+          formModel={loginModel}
+          onSubmit={handleLoginLogic}
+          buttonText={loading ? "Đang xử lý..." : "Đăng nhập"}
+          // Thêm class để giữ đúng style của bạn
+          customButtonClass={`login-submit-btn ${loading ? "loading" : ""}`}
+          disabled={loading}
+        />
 
         <div className="login-footer">
           <span>Chưa có tài khoản? </span>
