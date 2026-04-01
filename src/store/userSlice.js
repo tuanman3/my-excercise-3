@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-// Dữ liệu mẫu khởi tạo (Mock data)
+// Mock data
 const initialUsers = [
   {
     id: 1,

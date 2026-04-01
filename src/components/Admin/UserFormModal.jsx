@@ -13,7 +13,6 @@ const UserFormModal = ({ isOpen, onClose, onSave, editingUser }) => {
     status: editingUser?.status || "chưa kích hoạt",
   });
 
-  // Chuyển sang dùng Object để lưu lỗi cho từng trường cho chuyên nghiệp
   const [errors, setErrors] = useState({});
 
   const validateEmail = (email) => {
@@ -26,7 +25,6 @@ const UserFormModal = ({ isOpen, onClose, onSave, editingUser }) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
 
-    // Xóa lỗi của trường đó khi người dùng bắt đầu sửa
     if (errors[name]) {
       setErrors({ ...errors, [name]: "" });
     }
@@ -42,7 +40,7 @@ const UserFormModal = ({ isOpen, onClose, onSave, editingUser }) => {
       newErrors.email = "Định dạng email không hợp lệ!";
     }
 
-    // Validate Tên
+    // Validate name
     if (!formData.name?.trim()) {
       newErrors.name = "Họ tên không được để trống!";
     }
@@ -76,7 +74,6 @@ const UserFormModal = ({ isOpen, onClose, onSave, editingUser }) => {
           {editingUser ? "Chỉnh sửa người dùng" : "Thêm người dùng mới"}
         </h3>
 
-        {/* Sử dụng InputField component thay cho code HTML cũ */}
         {editingUser && (
           <InputField
             label="ID"
@@ -147,7 +144,6 @@ const UserFormModal = ({ isOpen, onClose, onSave, editingUser }) => {
           </select>
         </div>
 
-        {/* Hiển thị lỗi tổng quát nếu muốn (hoặc bỏ vì đã có lỗi từng ô) */}
         {Object.keys(errors).length > 0 && (
           <div
             className="error-summary"

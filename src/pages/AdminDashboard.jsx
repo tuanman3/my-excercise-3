@@ -44,7 +44,6 @@ const AdminDashboard = () => {
   const [editingUser, setEditingUser] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
-  // const [notify, setNotify] = useState({ show: false, msg: "", type: "" });
 
   useEffect(() => {
     if (!isLoggedIn) navigate("/login");

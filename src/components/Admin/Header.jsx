@@ -1,4 +1,3 @@
-// src/components/Admin/Header.jsx
 import { useSelector } from "react-redux";
 import { IconMenu } from "../Common/Icons";
 import LogoutModal from "./LogoutModal";

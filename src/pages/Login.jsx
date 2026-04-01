@@ -20,7 +20,6 @@ const Login = () => {
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Cấu hình form
   const loginModel = [
     {
       name: "username",
@@ -43,7 +42,6 @@ const Login = () => {
     setLoading(true);
     setError("");
 
-    // Giả lập độ trễ để thấy loading state
     setTimeout(() => {
       const userList = JSON.parse(localStorage.getItem("userList")) || [];
       const foundUser = userList.find(
@@ -92,12 +90,11 @@ const Login = () => {
           </div>
         )}
 
-        {/* DynamicForm */}
+        {/* Dynamic Form */}
         <DynamicForm
           formModel={loginModel}
           onSubmit={handleLoginLogic}
           buttonText={loading ? "Đang xử lý..." : "Đăng nhập"}
-          // Thêm class để giữ đúng style của bạn
           customButtonClass={`login-submit-btn ${loading ? "loading" : ""}`}
           disabled={loading}
         />

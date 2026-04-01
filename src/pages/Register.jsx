@@ -8,14 +8,13 @@ import {
   IconPhone,
   IconTick,
 } from "../components/Common/Icons";
-import DynamicForm from "../components/Form/DynamicForm"; // Giả sử path này
+import DynamicForm from "../components/Form/DynamicForm";
 
 const Register = () => {
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 
-  // Cấu hình các trường nhập liệu
   const registerModel = [
     {
       name: "username",
@@ -114,12 +113,10 @@ const Register = () => {
           </div>
         )}
 
-        {/* Sử dụng DynamicForm đã được tinh chỉnh style */}
         <DynamicForm
           formModel={registerModel}
           buttonText="Kích hoạt ngay"
           onSubmit={handleRegisterLogic}
-          // Bạn có thể thêm props className để DynamicForm render đúng class CSS của bạn
           customButtonClass="login-submit-btn"
         />
 
